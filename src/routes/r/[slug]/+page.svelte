@@ -9,30 +9,36 @@
     import { onMount } from "svelte";
 
     let notFound = false;
+    let json = { data: { posts: [] } }; // Initialize json with default structure
 
     onMount(async () => {
-        let response = await fetch(`/api/r/${slug}`);
+        try {
+            let response = await fetch(`/api/r/${slug}`);
 
-        if (response.status == 200) {
-            let json = await response.json();
+            if (response.status == 200) {
+                json = await response.json();
 
-            if (json.status == 200) {
-                console.log(json);
-            } else if (json.status == 404) {
+                if (json.status == 200) {
+                    console.log(json);
+                } else if (json.status == 404) {
+                    notFound = true;
+                    console.log("404");
+                }
+            } else if (response.status == 404) {
                 notFound = true;
                 console.log("404");
             }
-        } else if (response.status == 404) {
+        } catch (error) {
+            console.error("Error fetching data:", error);
             notFound = true;
-            console.log("404");
         }
     });
 </script>
 
-<body class="bg-ctp-base">
+<body class="bg-ctp-base h-[100vh]">
     <Navbar />
     {#if notFound}
-        <div class="flex flex-col items-center justify-center h-[100vh]">
+        <div class="flex flex-col items-center justify-center min-h-[90%]">
             <h1 class="text-5xl text-ctp-red">404 Not Found</h1>
             <a
                 class="text-xl text-ctp-text transition-all duration-300 hover:scale-105"
@@ -40,6 +46,28 @@
             >
         </div>
     {:else}
-        <p>a</p>
+        <div
+            class="flex flex-col bg-ctp-surface0 min-h-[90%] rounded-md mx-[25%] mt-5"
+        >
+            <div class="flex flex-row">
+                <p
+                    class="justify-start mr-auto mt-auto text-xl ml-3 text-ctp-text p-2"
+                >
+                    r/{slug}
+                </p>
+                <button
+                    class="justify-start ml-auto mr-3 mt-3 text-gray-800 bg-ctp-blue p-2 rounded-md"
+                    on:click={() => {
+                        window.location.href = `/r/${slug}/new`;
+                    }}>+ Create Post</button
+                >
+            </div>
+            {#each json.data.posts as post}
+                <div class="flex flex-col bg-ctp-surface1 rounded-md m-3 p-3">
+                    <h1 class="text-2xl text-ctp-text">{post.title}</h1>
+                    <p class="text-base text-ctp-text">{post.content}</p>
+                </div>
+            {/each}
+        </div>
     {/if}
 </body>

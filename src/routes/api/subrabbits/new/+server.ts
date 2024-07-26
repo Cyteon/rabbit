@@ -15,6 +15,7 @@ export async function POST({ request }) {
     name: body.name,
     description: body.description,
     owner: body.owner,
+    posts: [],
   };
 
   await db.collection("subrabbits").insertOne(subrabbit);
