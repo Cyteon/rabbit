@@ -25,6 +25,9 @@
 	"type": "module",
 	"dependencies": {
 		"@clerk/backend": "^1.4.1",
-		"clerk-sveltekit": "^0.4.2"
+		"clerk-sveltekit": "^0.4.2",
+		"mongodb": "^6.8.0",
+		"postgres": "^3.4.4",
+		"svelte-icons": "^2.1.0"
 	}
 }

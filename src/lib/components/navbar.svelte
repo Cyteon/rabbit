@@ -4,9 +4,9 @@
     import SignedOut from "clerk-sveltekit/client/SignedOut.svelte";
 </script>
 
-<nav class="bg-ctp-surface0">
+<nav class="bg-ctp-surface0 border-ctp-overlay2 border-b-[1px] h-[6%]">
     <div class="p-3 flex flex-row">
-        <a class="text-ctp-text text-xl" href="/">Rabbit</a>
+        <a class="text-ctp-text text-xl mt-auto mb-auto" href="/">Rabbit</a>
         <div class="justify-end ml-auto">
             <UserButton />
             <SignedOut>
