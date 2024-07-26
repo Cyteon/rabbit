@@ -20,17 +20,29 @@ export async function POST(req: Request) {
     publishableKey: PUBLIC_CLERK_PUBLISHABLE_KEY,
   });
 
-  const { isSignedIn, reason } = await clerkClient.authenticateRequest(req, {
-    jwtKey: PUBLIC_KEY,
-  });
+  try {
+    const { isSignedIn, reason } = await clerkClient.authenticateRequest(req, {
+      jwtKey: PUBLIC_KEY,
+    });
 
-  console.log(reason);
+    console.log("Authentication reason:", reason); // Log reason for debugging
 
-  if (!isSignedIn) {
-    return Response.json({ status: 401 });
+    if (!isSignedIn) {
+      return new Response(JSON.stringify({ status: 401, message: reason }), {
+        status: 401,
+      });
+    }
+
+    // Add logic to perform protected actions
+
+    return new Response(JSON.stringify({ message: "This is a reply" }), {
+      status: 200,
+    });
+  } catch (error) {
+    console.error("Authentication error:", error); // Log any errors that occur
+    return new Response(
+      JSON.stringify({ status: 500, message: "Internal Server Error" }),
+      { status: 500 },
+    );
   }
-
-  // Add logic to perform protected actions
-
-  return Response.json({ message: "This is a reply" });
 }
