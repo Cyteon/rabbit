@@ -8,7 +8,6 @@
 
     // State variable to control the visibility of the popup
     let showPopup = false;
-
     let communityName = "";
     let communityDescription = "";
     let communityError = "";
@@ -44,6 +43,9 @@
             communityError = json.message;
         }
     }
+
+    // State variable to control the visibility of the accordion
+    let showAccordion = false;
 </script>
 
 <nav
@@ -51,29 +53,26 @@
 >
     <div class="m-2">
         <button
-            class="flex flex-row w-full transition-all duration-300 hover:bg-black/15 p-1 rounded-lg"
+            class="flex flex-row w-full transition-all min-h-12 duration-300 hover:bg-black/15 p-1 rounded-lg"
         >
-            <div class="h-8"><MdHome /></div>
+            <div class="h-8 mt-auto mb-auto"><MdHome /></div>
             <p class="text-base m-auto">Home</p>
         </button>
         <SignedIn>
-            <label>
-                <input
-                    class="peer/showLabel absolute scale-0"
-                    type="checkbox"
-                />
-                <span
-                    class="block max-h-14 max-w-xs overflow-hidden rounded-lg p-1 transition-all duration-300 hover:bg-black/15 peer-checked/showLabel:max-h-52"
+            <hr class="border-gray-600 m-1 border-t-[1px]" />
+            <div class="accordion">
+                <div
+                    role="aria-button"
+                    class="flex flex-row items-center justify-between cursor-pointer min-h-12 p-1 rounded-lg transition-all duration-300 hover:bg-black/15"
+                    on:click={() => (showAccordion = !showAccordion)}
                 >
-                    <div class="flex flex-grow-0">
-                        <p class="cursor-pointer font-bold mt-[5%] mb-[5%]">
-                            Communities
-                        </p>
-                        <div class="h-6 mt-auto mb-auto ml-auto mr-1">
-                            <MdArrowDropDown />
-                        </div>
-                    </div>
-
+                    <p class="font-bold">Communities</p>
+                    <div class="h-6"><MdArrowDropDown /></div>
+                </div>
+                <div
+                    class="accordion-content"
+                    style:max-height={showAccordion ? "200px" : "0px"}
+                >
                     <button
                         class="flex flex-row w-full transition-all duration-300 hover:bg-black/15 p-1 rounded-lg"
                         on:click={togglePopup}
@@ -81,8 +80,8 @@
                         <div class="h-8"><MdAdd /></div>
                         <p class="text-base m-auto">Create a community</p>
                     </button>
-                </span>
-            </label>
+                </div>
+            </div>
         </SignedIn>
     </div>
 </nav>
@@ -130,3 +129,10 @@
         </div>
     </div>
 {/if}
+
+<style>
+    .accordion-content {
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+    }
+</style>

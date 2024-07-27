@@ -1,7 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 
 export default {
-  content: ["./src/**/*.{html,js,svelte,ts}", "node_modules/preline/dist/*.js"],
+  content: ["./src/**/*.{html,js,svelte,ts}"],
   theme: {
     extend: {},
   },
@@ -13,6 +13,5 @@ export default {
       // which flavour of colours to use by default, in the `:root`
       defaultFlavour: "frappe",
     }),
-    require("preline/plugin"),
   ],
 };
