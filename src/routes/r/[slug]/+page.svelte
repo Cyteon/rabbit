@@ -39,6 +39,7 @@
                 console.log(userData);
 
                 json.data.posts[index].imageUrl = userData.imageUrl;
+                json.data.posts[index].username = userData.username;
             }
 
             console.log(json);
@@ -82,15 +83,28 @@
                         class="flex flex-col bg-ctp-surface1 rounded-md m-3 p-3 transition-all duration-300 hover:scale-[102%]"
                     >
                         <div class="flex flex-row">
-                            <a href={`/u/${post.author}`}>
+                            <a href={`/u/${post.author}`} class="my-auto">
                                 <img
                                     class="h-8 w-8 rounded-full mr-2"
                                     src={post.imageUrl}
                                     alt="avatar"
                                 />
                             </a>
-                            <h1 class="text-2xl text-ctp-text">{post.title}</h1>
+                            <div class="flex flex-col">
+                                <a
+                                    href={`/r/${post.subrabbit}`}
+                                    class="text-sm text-ctp-text font-bold"
+                                >
+                                    r/{post.subrabbit}
+                                </a>
+                                <a
+                                    href={`/u/${post.author}`}
+                                    class="text-sm text-ctp-text"
+                                    >{post.username}</a
+                                >
+                            </div>
                         </div>
+                        <h1 class="text-2xl text-ctp-text">{post.title}</h1>
                         <p class="text-base text-ctp-text">{post.content}</p>
                     </div>
                 </a>
