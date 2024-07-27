@@ -90,19 +90,11 @@
                                     alt="avatar"
                                 />
                             </a>
-                            <div class="flex flex-col">
-                                <a
-                                    href={`/r/${post.subrabbit}`}
-                                    class="text-sm text-ctp-text font-bold"
-                                >
-                                    r/{post.subrabbit}
-                                </a>
-                                <a
-                                    href={`/u/${post.author}`}
-                                    class="text-sm text-ctp-text"
-                                    >{post.username}</a
-                                >
-                            </div>
+                            <a
+                                href={`/u/${post.author}`}
+                                class="text-base text-ctp-text mt-auto mb-auto"
+                                >{post.username}</a
+                            >
                         </div>
                         <h1 class="text-2xl text-ctp-text">{post.title}</h1>
                         <p class="text-base text-ctp-text">{post.content}</p>

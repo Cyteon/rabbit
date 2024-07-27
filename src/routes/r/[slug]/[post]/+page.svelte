@@ -8,6 +8,9 @@
     import Sidebar from "$lib/components/sidebar.svelte";
     import SignedIn from "clerk-sveltekit/client/SignedIn.svelte";
     import SignedOut from "clerk-sveltekit/client/SignedOut.svelte";
+
+    import FaCaretSquareUp from "svelte-icons/fa/FaCaretSquareUp.svelte";
+    import FaCaretSquareDown from "svelte-icons/fa/FaCaretSquareDown.svelte";
     import { onMount } from "svelte";
 
     let notFound = false;
@@ -72,9 +75,7 @@
         <div
             class="flex flex-col bg-ctp-surface0 min-h-[90%] rounded-md mx-[25%] mt-5"
         >
-            <div
-                class="flex flex-col bg-ctp-surface1 rounded-md m-3 p-3 transition-all duration-300 hover:scale-[102%]"
-            >
+            <div class="flex flex-col bg-ctp-surface1 rounded-md m-3 p-3">
                 <div class="flex flex-row">
                     <a href={`/u/${post.author}`} class="my-auto">
                         <img
@@ -98,6 +99,21 @@
                 </div>
                 <h1 class="text-2xl text-ctp-text">{post.title}</h1>
                 <p class="text-base text-ctp-text">{post.content}</p>
+                <div class="flex flex-row mt-3">
+                    <div
+                        class="text-ctp-text bg-ctp-surface0 w-fit py-2 px-3 flex flex-row rounded-full"
+                    >
+                        <button
+                            class="w-5 transition-all duration-300 hover:scale-110"
+                        >
+                            <FaCaretSquareUp />
+                        </button>
+                        <p class="mx-2">{post.upvotes - post.downvotes}</p>
+                        <button class="w-5">
+                            <FaCaretSquareDown />
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     {/if}
