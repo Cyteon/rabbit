@@ -37,7 +37,7 @@ export async function POST({ request }) {
     subrabbit: body.subrabbit,
     title: body.title,
     content: body.content,
-    owner: body.owner,
+    author: body.author,
     upvotes: 0,
     downvotes: 0,
     comments: [],

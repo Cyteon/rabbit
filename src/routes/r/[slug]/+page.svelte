@@ -6,10 +6,12 @@
 
     import Navbar from "$lib/components/navbar.svelte";
     import Sidebar from "$lib/components/sidebar.svelte";
+    import SignedIn from "clerk-sveltekit/client/SignedIn.svelte";
+    import SignedOut from "clerk-sveltekit/client/SignedOut.svelte";
     import { onMount } from "svelte";
 
     let notFound = false;
-    let json = { data: { posts: [] } }; // Initialize json with default structure
+    let json = { data: { posts: [] } };
 
     onMount(async () => {
         try {
@@ -19,7 +21,7 @@
                 json = await response.json();
 
                 if (json.status == 200) {
-                    console.log(json);
+                    //console.log(json);
                 } else if (json.status == 404) {
                     notFound = true;
                     console.log("404");
@@ -28,6 +30,18 @@
                 notFound = true;
                 console.log("404");
             }
+
+            for (let index = 0; index < json.data.posts.length; index++) {
+                const post = json.data.posts[index];
+                let user = await fetch(`/api/u/${post.author}`);
+                let userData = await user.json();
+
+                console.log(userData);
+
+                json.data.posts[index].imageUrl = userData.imageUrl;
+            }
+
+            console.log(json);
         } catch (error) {
             console.error("Error fetching data:", error);
             notFound = true;
@@ -63,10 +77,23 @@
                 >
             </div>
             {#each json.data.posts as post}
-                <div class="flex flex-col bg-ctp-surface1 rounded-md m-3 p-3">
-                    <h1 class="text-2xl text-ctp-text">{post.title}</h1>
-                    <p class="text-base text-ctp-text">{post.content}</p>
-                </div>
+                <a href={`/r/${slug}/${post.id}`}>
+                    <div
+                        class="flex flex-col bg-ctp-surface1 rounded-md m-3 p-3 transition-all duration-300 hover:scale-[102%]"
+                    >
+                        <div class="flex flex-row">
+                            <a href={`/u/${post.author}`}>
+                                <img
+                                    class="h-8 w-8 rounded-full mr-2"
+                                    src={post.imageUrl}
+                                    alt="avatar"
+                                />
+                            </a>
+                            <h1 class="text-2xl text-ctp-text">{post.title}</h1>
+                        </div>
+                        <p class="text-base text-ctp-text">{post.content}</p>
+                    </div>
+                </a>
             {/each}
         </div>
     {/if}

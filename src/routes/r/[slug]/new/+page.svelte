@@ -9,6 +9,9 @@
     import { onMount } from "svelte";
 
     import { goto } from "$app/navigation";
+    import SignedIn from "clerk-sveltekit/client/SignedIn.svelte";
+    import SignedOut from "clerk-sveltekit/client/SignedOut.svelte";
+    import SignIn from "clerk-sveltekit/client/SignIn.svelte";
 
     let notFound = false;
 
@@ -73,30 +76,39 @@
             >
         </div>
     {:else}
-        <div
-            class="flex flex-col bg-ctp-surface0 min-h-[90%] rounded-md mx-[25%] mt-5"
-        >
-            <div class="flex flex-col m-5">
-                <input
-                    class="mt-1 block text-white w-full rounded-md border-ctp-overlay2 border-[1px] p-2 bg-ctp-overlay2 placeholder-gray-600"
-                    type="text"
-                    placeholder="Post Title"
-                    bind:value={title}
-                />
-                <textarea
-                    class="mt-2 block text-white w-full rounded-md border-ctp-overlay2 border-[1px] p-2 bg-ctp-overlay2 placeholder-gray-600"
-                    type="text"
-                    rows="12"
-                    placeholder="Post Content"
-                    bind:value={content}
-                />
-                <button
-                    class="mt-4 bg-ctp-blue text-gray-800 p-2 rounded w-full"
-                    on:click={createPost}
-                >
-                    Create
-                </button>
+        <SignedIn>
+            <div
+                class="flex flex-col bg-ctp-surface0 min-h-[90%] rounded-md mx-[25%] mt-5"
+            >
+                <div class="flex flex-col m-5">
+                    <input
+                        class="mt-1 block text-white w-full rounded-md border-ctp-overlay2 border-[1px] p-2 bg-ctp-overlay2 placeholder-gray-600"
+                        type="text"
+                        placeholder="Post Title"
+                        bind:value={title}
+                    />
+                    <textarea
+                        class="mt-2 block text-white w-full rounded-md border-ctp-overlay2 border-[1px] p-2 bg-ctp-overlay2 placeholder-gray-600"
+                        type="text"
+                        rows="12"
+                        placeholder="Post Content"
+                        bind:value={content}
+                    />
+                    <button
+                        class="mt-4 bg-ctp-blue text-gray-800 p-2 rounded w-full"
+                        on:click={createPost}
+                    >
+                        Create
+                    </button>
+                </div>
             </div>
-        </div>
+        </SignedIn>
+        <SignedOut>
+            <div class="flex absolute justify-center h-[100%] w-[100%]">
+                <div class="mt-auto mb-auto text-black-pls">
+                    <SignIn redirectUrl={`/r/${slug}/new`} />
+                </div>
+            </div>
+        </SignedOut>
     {/if}
 </body>
