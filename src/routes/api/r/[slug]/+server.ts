@@ -1,54 +1,52 @@
-import { connectToDatabase } from "$lib/db.server";
+import { sql } from "$lib/db.server";
 
 export async function GET({ url }) {
-  var db = await connectToDatabase();
-
   let slug = url.pathname.split("/").pop();
 
-  var result = await db.collection("subrabbits").findOne({ name: slug });
+  var result = await sql`select * from subrabbits where name = ${slug}`;
 
-  if (result == null) {
-    return Response.json({ message: "Subrabbit not found", status: 404 });
+  if (result.length === 0) {
+    return Response.json({ message: "404 Not Found", status: 404 });
   }
+
+  var posts =
+    await sql`select * from posts where subrabbit = ${result[0].id} order by upvotes asc`;
 
   return Response.json({
     status: 200,
-    data: result,
+    data: result[0],
+    posts: posts,
   });
 }
 
 export async function POST({ request }) {
   var body = await request.json();
 
-  var db = await connectToDatabase();
+  var result =
+    await sql`select * from subrabbits where name = ${body.subrabbit}`;
 
-  var result = await db
-    .collection("subrabbits")
-    .findOne({ name: body.subrabbit });
-
-  if (result == null) {
+  if (result.length === 0) {
     return Response.json({ message: "Subrabbit not found", status: 404 });
   }
 
   let id = Math.random().toString(36).substring(4);
 
-  var post = {
-    id: id,
-    subrabbit: body.subrabbit,
-    title: body.title,
-    content: body.content,
-    author: body.author,
-    upvotes: 0,
-    downvotes: 0,
-    comments: [],
-    awards: {},
-  };
+  let user = await sql`select * from users where clerk_id = ${body.author}`;
 
-  result.posts.push(post);
+  /*
+  id SERIAL PRIMARY KEY,
+  id_rand TEXT UNIQUE NOT NULL,
+  title TEXT NOT NULL,
+  content TEXT NOT NULL,
+  subrabbit INTEGER REFERENCES subrabbits(id),
+  author INTEGER REFERENCES users(id),
+  author_clerk_id TEXT NOT NULL ,
+  upvotes INTEGER DEFAULT 0,
+  downvotes INTEGER DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  */
 
-  await db
-    .collection("subrabbits")
-    .updateOne({ name: body.subrabbit }, { $set: { posts: result.posts } });
+  await sql`insert into posts (id_rand, title, content, subrabbit, author, author_clerk_id) values (${id}, ${body.title}, ${body.content}, ${result[0].id}, ${user[0].id}, ${body.author})`;
 
   return Response.json({
     message: "Created",

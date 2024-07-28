@@ -14,7 +14,7 @@
     import { onMount } from "svelte";
 
     let notFound = false;
-    let json = { data: { posts: [] } };
+    let json = { data: {}, posts: [] };
 
     onMount(async () => {
         try {
@@ -34,15 +34,15 @@
                 console.log("404");
             }
 
-            for (let index = 0; index < json.data.posts.length; index++) {
-                const post = json.data.posts[index];
-                let user = await fetch(`/api/u/${post.author}`);
+            for (let index = 0; index < json.posts.length; index++) {
+                const post = json.posts[index];
+                let user = await fetch(`/api/u/${post.author_clerk_id}`);
                 let userData = await user.json();
 
                 console.log(userData);
 
-                json.data.posts[index].imageUrl = userData.imageUrl;
-                json.data.posts[index].username = userData.username;
+                json.posts[index].imageUrl = userData.imageUrl;
+                json.posts[index].username = userData.username;
             }
 
             console.log(json);
@@ -80,7 +80,7 @@
                     }}>+ Create Post</button
                 >
             </div>
-            {#each json.data.posts as post}
+            {#each json.posts as post}
                 <a href={`/r/${slug}/${post.id}`}>
                     <div
                         class="flex flex-col bg-ctp-surface1 rounded-md m-3 p-3 transition-all duration-300 hover:scale-[102%] overflow-hidden"

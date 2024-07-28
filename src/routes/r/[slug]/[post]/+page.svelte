@@ -14,38 +14,24 @@
     import { onMount } from "svelte";
 
     let notFound = false;
-    let json = { data: { posts: [] } };
+    let json = { data: {}, post: {}, subrabbit: {} };
 
     let post = {};
 
     onMount(async () => {
         try {
-            let response = await fetch(`/api/r/${slug}`);
+            let response = await fetch(`/api/r/${slug}/${data.post}`);
 
             if (response.status === 200) {
-                let json = await response.json();
+                json = await response.json();
 
                 if (json.status === 200) {
-                    // Process posts data
-                    for (
-                        let index = 0;
-                        index < json.data.posts.length;
-                        index++
-                    ) {
-                        if (json.data.posts[index].id === data.post) {
-                            post = json.data.posts[index];
-                            let user = await fetch(`/api/u/${post.author}`);
-                            let userData = await user.json();
+                    post = json.data;
+                    let user = await fetch(`/api/u/${post.author_clerk_id}`);
+                    let userData = await user.json();
 
-                            console.log(userData);
-
-                            post.imageUrl = userData.imageUrl;
-                            post.username = userData.username;
-                            json.data.posts[index].imageUrl = userData.imageUrl;
-                        }
-                    }
-
-                    console.log(post);
+                    post.imageUrl = userData.imageUrl;
+                    post.username = userData.username;
                 } else if (json.status === 404) {
                     notFound = true;
                     console.log("404");
@@ -86,10 +72,10 @@
                     </a>
                     <div class="flex flex-col">
                         <a
-                            href={`/r/${post.subrabbit}`}
+                            href={`/r/${json.subrabbit.name}`}
                             class="text-sm text-ctp-text font-bold"
                         >
-                            r/{post.subrabbit}
+                            r/{json.subrabbit.name}
                         </a>
                         <a
                             href={`/u/${post.author}`}
