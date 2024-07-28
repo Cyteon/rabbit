@@ -129,7 +129,7 @@
                 <h1 class="text-2xl text-ctp-text">{post.title}</h1>
                 <div>
                     <p
-                        class="text-base text-ctp-text break-words max-h-24 overflow-hidden"
+                        class="text-base text-ctp-text max-h-24 overflow-hidden whitespace-pre-wrap"
                     >
                         {post.content}
                     </p>

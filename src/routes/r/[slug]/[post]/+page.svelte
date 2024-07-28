@@ -127,7 +127,7 @@
                     </div>
                 </div>
                 <h1 class="text-2xl text-ctp-text">{post.title}</h1>
-                <p class="text-base text-ctp-text break-words">
+                <p class="text-base text-ctp-text whitespace-pre-wrap">
                     {post.content}
                 </p>
                 <div class="flex flex-row mt-3">
