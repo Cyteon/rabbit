@@ -3,6 +3,15 @@ import { sql } from "$lib/db.server";
 export async function GET({ url }) {
   let slug = url.pathname.split("/").pop();
 
+  if (slug == "trending") {
+    var posts = await sql`select * from posts order by votes desc`;
+
+    return Response.json({
+      status: 200,
+      posts: posts,
+    });
+  }
+
   var result = await sql`select * from subrabbits where name = ${slug}`;
 
   if (result.length === 0) {
@@ -46,7 +55,7 @@ export async function POST({ request }) {
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   */
 
-  await sql`insert into posts (id_rand, title, content, subrabbit, author, author_clerk_id) values (${id}, ${body.title}, ${body.content}, ${result[0].id}, ${user[0].id}, ${body.author})`;
+  await sql`insert into posts (id_rand, title, content, subrabbit, subrabbit_name, author, author_clerk_id) values (${id}, ${body.title}, ${body.content}, ${result[0].id}, ${body.subrabbit}, ${user[0].id}, ${body.author})`;
 
   return Response.json({
     message: "Created",

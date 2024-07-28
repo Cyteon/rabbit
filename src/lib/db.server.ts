@@ -29,6 +29,7 @@ async function createTables() {
     title TEXT NOT NULL,
     content TEXT NOT NULL,
     subrabbit INTEGER REFERENCES subrabbits(id),
+    subrabbit_name TEXT NOT NULL,
     author INTEGER REFERENCES users(id),
     author_clerk_id TEXT NOT NULL ,
     votes INTEGER DEFAULT 0,
