@@ -49,7 +49,7 @@
 </script>
 
 <nav
-    class="bg-ctp-mantle border-ctp-overlay2 border-r-[1px] w-[15%] h-[94%] text-ctp-text absolute"
+    class="bg-ctp-mantle border-ctp-overlay2 border-r-[1px] w-[15%] h-[100%] text-ctp-text fixed"
 >
     <div class="m-2">
         <button

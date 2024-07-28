@@ -3,8 +3,8 @@ import { sql } from "$lib/db.server";
 export async function GET({ url }) {
   let slug = url.pathname.split("/").pop();
 
-  if (slug == "trending") {
-    var posts = await sql`select * from posts order by votes desc`;
+  if (slug == "top") {
+    var posts = await sql`select * from posts order by votes desc limit 5`;
 
     return Response.json({
       status: 200,

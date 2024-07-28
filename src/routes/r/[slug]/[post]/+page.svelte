@@ -102,7 +102,7 @@
         </div>
     {:else}
         <div
-            class="flex flex-col bg-ctp-surface0 min-h-[90%] rounded-md mx-[25%] mt-5"
+            class="flex flex-col bg-ctp-surface0 min-h-[90%] rounded-md mx-[10%] mt-5"
         >
             <div class="flex flex-col bg-ctp-surface1 rounded-md m-3 p-3">
                 <div class="flex flex-row">

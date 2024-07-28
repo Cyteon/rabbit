@@ -4,7 +4,7 @@
     import SignedOut from "clerk-sveltekit/client/SignedOut.svelte";
 </script>
 
-<nav class="bg-ctp-mantle border-ctp-overlay2 border-b-[1px]">
+<nav class="bg-ctp-mantle border-ctp-overlay2 border-b-[1px] sticky top-0 z-10">
     <div class="p-3 flex flex-row">
         <a class="text-ctp-text text-xl mt-auto mb-auto" href="/">Rabbit</a>
         <div class="justify-end ml-auto">

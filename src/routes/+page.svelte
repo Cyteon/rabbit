@@ -13,7 +13,7 @@
 
     onMount(async () => {
         try {
-            let response = await fetch(`/api/r/trending`);
+            let response = await fetch(`/api/r/top`);
 
             if (response.status == 200) {
                 json = await response.json();
