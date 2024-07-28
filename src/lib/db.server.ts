@@ -6,7 +6,8 @@ const sql = postgres(DB_URL);
 async function createTables() {
   await sql`CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
-    clerk_id TEXT UNIQUE NOT NULL
+    clerk_id TEXT UNIQUE NOT NULL,
+    votes JSONB DEFAULT '{}'
   );`;
 
   await sql`CREATE TABLE IF NOT EXISTS sessions (
@@ -30,8 +31,7 @@ async function createTables() {
     subrabbit INTEGER REFERENCES subrabbits(id),
     author INTEGER REFERENCES users(id),
     author_clerk_id TEXT NOT NULL ,
-    upvotes INTEGER DEFAULT 0,
-    downvotes INTEGER DEFAULT 0,
+    votes INTEGER DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   );`;
 
@@ -40,7 +40,7 @@ async function createTables() {
     content TEXT NOT NULL,
     post INTEGER REFERENCES posts(id),
     author INTEGER REFERENCES users(id),
-    upvotes INTEGER DEFAULT 0,
+    votes INTEGER DEFAULT 0,
     downvotes INTEGER DEFAULT 0
   );`;
 }

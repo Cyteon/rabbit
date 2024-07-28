@@ -10,7 +10,7 @@ export async function GET({ url }) {
   }
 
   var posts =
-    await sql`select * from posts where subrabbit = ${result[0].id} order by upvotes asc`;
+    await sql`select * from posts where subrabbit = ${result[0].id} order by votes desc`;
 
   return Response.json({
     status: 200,

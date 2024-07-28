@@ -16,6 +16,8 @@
     let notFound = false;
     let json = { data: {}, posts: [] };
 
+    let selfData = { data: { votes: {} } };
+
     onMount(async () => {
         try {
             let response = await fetch(`/api/r/${slug}`);
@@ -45,12 +47,51 @@
                 json.posts[index].username = userData.username;
             }
 
+            let result = await fetch(`/api/u/${window?.Clerk?.user?.id}`);
+            selfData = await result.json();
+
             console.log(json);
         } catch (error) {
             console.error("Error fetching data:", error);
             notFound = true;
         }
     });
+
+    async function votePost(vote, post) {
+        try {
+            let response = await fetch(`/api/r/${slug}/${post.id_rand}/vote`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    vote: vote,
+                    user_id: selfData.data.id,
+                    subrabbit: post.subrabbit,
+                    post: post.id,
+                }),
+            });
+
+            if (response.status === 200) {
+                let json = await response.json();
+                post.votes = json.post.votes;
+
+                selfData.data.votes[post.id] = vote;
+            }
+        } catch (error) {
+            console.error("Error voting post:", error);
+        }
+    }
+
+    function downvote(event, post) {
+        event.stopPropagation();
+        votePost(-1, post);
+    }
+
+    function upvote(event, post) {
+        event.stopPropagation();
+        votePost(1, post);
+    }
 </script>
 
 <body class="bg-ctp-base h-[100vh]">
@@ -77,55 +118,99 @@
                     class="justify-start ml-auto mr-3 mt-3 text-gray-800 bg-ctp-blue p-2 rounded-md"
                     on:click={() => {
                         window.location.href = `/r/${slug}/new`;
-                    }}>+ Create Post</button
-                >
+                    }}
+                    >+ Create Post
+                </button>
             </div>
             {#each json.posts as post}
-                <a href={`/r/${slug}/${post.id}`}>
-                    <div
-                        class="flex flex-col bg-ctp-surface1 rounded-md m-3 p-3 transition-all duration-300 hover:scale-[102%] overflow-hidden"
-                    >
-                        <div class="flex flex-row">
-                            <a href={`/u/${post.author}`} class="my-auto">
-                                <img
-                                    class="h-8 w-8 rounded-full mr-2"
-                                    src={post.imageUrl}
-                                    alt="avatar"
-                                />
-                            </a>
-                            <a
-                                href={`/u/${post.author}`}
-                                class="text-base text-ctp-text mt-auto mb-auto"
-                                >{post.username}</a
-                            >
-                        </div>
-                        <h1 class="text-2xl text-ctp-text">{post.title}</h1>
-                        <div>
-                            <p
-                                class="text-base text-ctp-text break-words max-h-24 overflow-hidden"
-                            >
-                                {post.content}
-                            </p>
-                        </div>
-                        <div class="flex flex-row">
-                            <div
-                                class="text-ctp-text bg-ctp-surface0 w-fit py-2 px-3 flex flex-row rounded-full"
-                            >
+                <div
+                    class="flex flex-col bg-ctp-surface1 rounded-md m-3 p-3 transition-all duration-300 hover:scale-[102%] overflow-hidden"
+                    on:click={() => {
+                        window.location.href = `/r/${slug}/${post.id_rand}`;
+                    }}
+                >
+                    <div class="flex flex-row">
+                        <a
+                            href={`/u/${post.username}`}
+                            class="my-auto"
+                            on:click|stopPropagation
+                        >
+                            <img
+                                class="h-8 w-8 rounded-full mr-2"
+                                src={post.imageUrl}
+                                alt="avatar"
+                            />
+                        </a>
+                        <a
+                            href={`/u/${post.username}`}
+                            class="text-base text-ctp-text mt-auto mb-auto"
+                            on:click|stopPropagation>{post.username}</a
+                        >
+                    </div>
+                    <h1 class="text-2xl text-ctp-text">{post.title}</h1>
+                    <div>
+                        <p
+                            class="text-base text-ctp-text break-words max-h-24 overflow-hidden"
+                        >
+                            {post.content}
+                        </p>
+                    </div>
+                    <div class="flex flex-row">
+                        <div
+                            class="text-ctp-text bg-ctp-surface0 w-fit py-2 px-3 flex flex-row rounded-full"
+                        >
+                            {#if post.id in selfData.data.votes}
+                                {#if selfData.data.votes[post.id] == -1}
+                                    <button
+                                        on:click={(event) =>
+                                            upvote(event, post)}
+                                        class="w-5 transition-all duration-300 hover:scale-110"
+                                    >
+                                        <FaCaretSquareUp />
+                                    </button>
+                                    <p class="mx-2">{post.votes}</p>
+                                    <button
+                                        on:click={(event) =>
+                                            downvote(event, post)}
+                                        class="w-5 transition-all duration-300 hover:scale-110 text-ctp-blue"
+                                    >
+                                        <FaCaretSquareDown />
+                                    </button>
+                                {:else}
+                                    <button
+                                        on:click={(event) =>
+                                            upvote(event, post)}
+                                        class="w-5 transition-all duration-300 hover:scale-110 text-ctp-blue"
+                                    >
+                                        <FaCaretSquareUp />
+                                    </button>
+                                    <p class="mx-2">{post.votes}</p>
+                                    <button
+                                        on:click={(event) =>
+                                            downvote(event, post)}
+                                        class="w-5 transition-all duration-300 hover:scale-110"
+                                    >
+                                        <FaCaretSquareDown />
+                                    </button>
+                                {/if}
+                            {:else}
                                 <button
+                                    on:click={(event) => upvote(event, post)}
                                     class="w-5 transition-all duration-300 hover:scale-110"
                                 >
                                     <FaCaretSquareUp />
                                 </button>
-                                <p class="mx-2">
-                                    {post.upvotes - post.downvotes}
-                                </p>
-                                <button class="w-5">
+                                <p class="mx-2">{post.votes}</p>
+                                <button
+                                    on:click={(event) => downvote(event, post)}
+                                    class="w-5 transition-all duration-300 hover:scale-110"
+                                >
                                     <FaCaretSquareDown />
                                 </button>
-                            </div>
+                            {/if}
                         </div>
                     </div>
-                </a>
+                </div>
             {/each}
         </div>
     {/if}

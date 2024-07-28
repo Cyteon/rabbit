@@ -18,12 +18,16 @@
 
     let post = {};
 
+    let selfData = { data: { votes: {} } };
+
     onMount(async () => {
         try {
             let response = await fetch(`/api/r/${slug}/${data.post}`);
 
             if (response.status === 200) {
                 json = await response.json();
+
+                console.log(json);
 
                 if (json.status === 200) {
                     post = json.data;
@@ -32,6 +36,11 @@
 
                     post.imageUrl = userData.imageUrl;
                     post.username = userData.username;
+
+                    let result = await fetch(
+                        `/api/u/${window?.Clerk?.user?.id}`,
+                    );
+                    selfData = await result.json();
                 } else if (json.status === 404) {
                     notFound = true;
                     console.log("404");
@@ -45,6 +54,40 @@
             notFound = true;
         }
     });
+
+    async function votePost(vote) {
+        try {
+            let response = await fetch(`/api/r/${slug}/${data.post}/vote`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    vote: vote,
+                    user_id: selfData.data.id,
+                    subrabbit: post.subrabbit,
+                    post: post.id,
+                }),
+            });
+
+            if (response.status === 200) {
+                let json = await response.json();
+                post.votes = json.post.votes;
+
+                selfData.data.votes[post.id] = vote;
+            }
+        } catch (error) {
+            console.error("Error voting post:", error);
+        }
+    }
+
+    async function downvote() {
+        await votePost(-1);
+    }
+
+    async function upvote() {
+        await votePost(1);
+    }
 </script>
 
 <body class="bg-ctp-base h-[100vh]">
@@ -91,15 +134,55 @@
                     <div
                         class="text-ctp-text bg-ctp-surface0 w-fit py-2 px-3 flex flex-row rounded-full"
                     >
-                        <button
-                            class="w-5 transition-all duration-300 hover:scale-110"
-                        >
-                            <FaCaretSquareUp />
-                        </button>
-                        <p class="mx-2">{post.upvotes - post.downvotes}</p>
-                        <button class="w-5">
-                            <FaCaretSquareDown />
-                        </button>
+                        {#if post.id in selfData.data.votes}
+                            {#if selfData.data.votes[post.id] == -1}
+                                <button
+                                    on:click={upvote}
+                                    class="w-5 transition-all duration-300 hover:scale-110"
+                                >
+                                    <FaCaretSquareUp />
+                                </button>
+                                <p class="mx-2">
+                                    {post.votes}
+                                </p>
+                                <button
+                                    on:click={downvote}
+                                    class="w-5 transition-all duration-300 hover:scale-110 text-ctp-blue"
+                                >
+                                    <FaCaretSquareDown />
+                                </button>
+                            {:else}
+                                <button
+                                    on:click={upvote}
+                                    class="w-5 transition-all duration-300 hover:scale-110 text-ctp-blue"
+                                >
+                                    <FaCaretSquareUp />
+                                </button>
+                                <p class="mx-2">
+                                    {post.votes}
+                                </p>
+                                <button
+                                    on:click={downvote}
+                                    class="w-5 transition-all duration-300 hover:scale-110"
+                                >
+                                    <FaCaretSquareDown />
+                                </button>
+                            {/if}
+                        {:else}
+                            <button
+                                on:click={upvote}
+                                class="w-5 transition-all duration-300 hover:scale-110"
+                            >
+                                <FaCaretSquareUp />
+                            </button>
+                            <p class="mx-2">{post.votes}</p>
+                            <button
+                                on:click={downvote}
+                                class="w-5 transition-all duration-300 hover:scale-110"
+                            >
+                                <FaCaretSquareDown />
+                            </button>
+                        {/if}
                     </div>
                 </div>
             </div>

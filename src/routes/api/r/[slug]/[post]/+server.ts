@@ -1,6 +1,14 @@
+import { createClerkClient } from "@clerk/backend";
+import { CLERK_SECRET_KEY } from "$env/static/private";
+import { PUBLIC_CLERK_PUBLISHABLE_KEY } from "$env/static/public";
 import { sql } from "$lib/db.server";
 
-export async function GET({ url }) {
+const clerkClient = createClerkClient({
+  secretKey: CLERK_SECRET_KEY,
+  publishableKey: PUBLIC_CLERK_PUBLISHABLE_KEY,
+});
+
+export async function GET({ url, request }) {
   let slug = url.pathname.split("/")[3];
   let post = url.pathname.split("/")[4];
 
