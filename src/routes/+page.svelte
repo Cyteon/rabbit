@@ -13,7 +13,17 @@
 
     onMount(async () => {
         try {
-            let response = await fetch(`/api/r/top`);
+            let response;
+
+            try {
+                let response = await fetch(`/api/u/self`);
+
+                if (response.status == 200) {
+                    selfData = await response.json();
+                }
+            } catch (_) {}
+
+            response = await fetch(`/api/r/top`);
 
             if (response.status == 200) {
                 json = await response.json();
@@ -37,11 +47,6 @@
                 json.posts[index].imageUrl = userData.imageUrl;
                 json.posts[index].username = userData.username;
             }
-
-            let result = await fetch(`/api/u/self`);
-            selfData = await result.json();
-
-            console.log(json);
         } catch (error) {
             console.error("Error fetching data:", error);
         }

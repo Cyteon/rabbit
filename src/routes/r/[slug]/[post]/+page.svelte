@@ -24,7 +24,10 @@
 
     onMount(async () => {
         try {
-            let response = await fetch(`/api/r/${slug}/${data.post}`);
+            let response = await fetch(`/api/u/self`);
+            selfData = await response.json();
+
+            response = await fetch(`/api/r/${slug}/${data.post}`);
 
             if (response.status === 200) {
                 json = await response.json();
@@ -38,9 +41,6 @@
 
                     post.imageUrl = userData.imageUrl;
                     post.username = userData.username;
-
-                    let result = await fetch(`/api/u/self`);
-                    selfData = await result.json();
 
                     json.comments.forEach(async (post, index) => {
                         let user = await fetch(

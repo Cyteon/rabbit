@@ -28,6 +28,12 @@ export async function GET({ url }) {
   });
 }
 
+// JSON {
+//  "subrabbit": "string",
+//  "title": "string",
+//  "content": "string",
+//  "author": "string"
+//}
 export async function POST({ request }) {
   var body = await request.json();
 
@@ -41,19 +47,6 @@ export async function POST({ request }) {
   let id = Math.random().toString(36).substring(4);
 
   let user = await sql`select * from users where clerk_id = ${body.author}`;
-
-  /*
-  id SERIAL PRIMARY KEY,
-  id_rand TEXT UNIQUE NOT NULL,
-  title TEXT NOT NULL,
-  content TEXT NOT NULL,
-  subrabbit INTEGER REFERENCES subrabbits(id),
-  author INTEGER REFERENCES users(id),
-  author_clerk_id TEXT NOT NULL ,
-  upvotes INTEGER DEFAULT 0,
-  downvotes INTEGER DEFAULT 0,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-  */
 
   await sql`insert into posts (id_rand, title, content, subrabbit, subrabbit_name, author, author_clerk_id) values (${id}, ${body.title}, ${body.content}, ${result[0].id}, ${body.subrabbit}, ${user[0].id}, ${body.author})`;
 
