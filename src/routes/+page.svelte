@@ -23,7 +23,7 @@
                 }
             } catch (_) {}
 
-            response = await fetch(`/api/r/top`);
+            response = await fetch(`/api/posts/top`);
 
             if (response.status == 200) {
                 json = await response.json();

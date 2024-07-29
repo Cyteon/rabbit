@@ -3,15 +3,6 @@ import { sql } from "$lib/db.server";
 export async function GET({ url }) {
   let slug = url.pathname.split("/").pop();
 
-  if (slug == "top") {
-    var posts = await sql`select * from posts order by votes desc limit 5`;
-
-    return Response.json({
-      status: 200,
-      posts: posts,
-    });
-  }
-
   var result = await sql`select * from subrabbits where name = ${slug}`;
 
   if (result.length === 0) {
