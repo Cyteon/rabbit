@@ -38,11 +38,13 @@ async function createTables() {
 
   await sql`CREATE TABLE IF NOT EXISTS comments (
     id SERIAL PRIMARY KEY,
+    id_rand TEXT UNIQUE NOT NULL,
     content TEXT NOT NULL,
     post INTEGER REFERENCES posts(id),
     author INTEGER REFERENCES users(id),
+    author_clerk_id TEXT NOT NULL,
     votes INTEGER DEFAULT 0,
-    downvotes INTEGER DEFAULT 0
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   );`;
 }
 

@@ -14,11 +14,13 @@
     import { onMount } from "svelte";
 
     let notFound = false;
-    let json = { data: {}, post: {}, subrabbit: {} };
+    let json = { data: {}, post: {}, subrabbit: {}, comments: [] };
 
     let post = {};
 
     let selfData = { data: { votes: {} } };
+
+    let comment;
 
     onMount(async () => {
         try {
@@ -41,6 +43,16 @@
                         `/api/u/${window?.Clerk?.user?.id}`,
                     );
                     selfData = await result.json();
+
+                    json.comments.forEach(async (post, index) => {
+                        let user = await fetch(
+                            `/api/u/${post.author_clerk_id}`,
+                        );
+                        let userData = await user.json();
+
+                        json.comments[index].imageUrl = userData.imageUrl;
+                        json.comments[index].username = userData.username;
+                    });
                 } else if (json.status === 404) {
                     notFound = true;
                     console.log("404");
@@ -87,6 +99,33 @@
 
     async function upvote() {
         await votePost(1);
+    }
+
+    async function addComment() {
+        let result = await fetch(`/api/r/${slug}/${data.post}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                content: comment,
+                user_id: selfData.data.id,
+                clerk_id: window?.Clerk.user.id,
+                subrabbit: post.subrabbit,
+                post: post.id,
+            }),
+        });
+
+        if (result.status === 200) {
+            let data = await result.json();
+
+            data.comment.imageUrl = selfData.imageUrl;
+            data.comment.username = selfData.username;
+            data.comment.votes = { 1: 0, "-1": 0 };
+            data.comment.author_clerk_id = selfData.data.id;
+
+            json.comments = [data.comment, ...json.comments];
+        }
     }
 </script>
 
@@ -188,6 +227,40 @@
                     </div>
                 </div>
             </div>
+            <div class="ml-3 mr-3 p-2 flex flex-row bg-ctp-surface1 rounded-md">
+                <input
+                    placeholder="Add a comment"
+                    class="rounded-md p-2 mr-2 w-full bg-ctp-mantle text-ctp-text"
+                    bind:value={comment}
+                />
+                <button
+                    class="bg-ctp-blue text-gray-800 px-3 py-2 rounded-md"
+                    on:click={addComment}
+                >
+                    Send
+                </button>
+            </div>
+            {#each json.comments as comment}
+                <div
+                    class="ml-3 mr-3 mt-3 p-2 flex flex-col bg-ctp-surface1 rounded-md text-ctp-text"
+                >
+                    <div class="flex flex-row">
+                        <a href={`/u/${comment.author}`} class="my-auto">
+                            <img
+                                class="h-8 w-8 rounded-full mr-2"
+                                src={comment.imageUrl}
+                                alt="avatar"
+                            />
+                        </a>
+                        <a
+                            href={`/u/${comment.author}`}
+                            class="text-base text-ctp-text mt-auto mb-auto"
+                            >{comment.username}</a
+                        >
+                    </div>
+                    <p>{comment.content}</p>
+                </div>
+            {/each}
         </div>
     {/if}
 </body>
