@@ -24,15 +24,14 @@
     let json = { data: { subrabbits_interacted_with: [] } };
 
     onMount(async () => {
-        let self = await fetch(`/api/u/self`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
+        try {
+            let response = await fetch(`/api/u/self`);
 
-        if (self.status == 200) {
-            json = await self.json();
+            if (response.status == 200) {
+                json = await response.json();
+            }
+        } catch (err) {
+            console.error("Error fetching data:", err);
         }
     });
 

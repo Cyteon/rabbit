@@ -20,8 +20,15 @@
 
     onMount(async () => {
         try {
-            let response = await fetch(`/api/u/self`);
-            selfData = await response.json();
+            let response;
+
+            try {
+                let response = await fetch(`/api/u/self`);
+
+                if (response.status == 200) {
+                    selfData = await response.json();
+                }
+            } catch (_) {}
 
             response = await fetch(`/api/r/${slug}`);
 
