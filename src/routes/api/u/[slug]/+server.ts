@@ -15,6 +15,11 @@ export async function GET({ url, request, locals }) {
 
     let data = await sql`select * from users where clerk_id = ${user.id}`;
 
+    if (data.length === 0) {
+      data =
+        await sql`insert into users (clerk_id) values (${user.id}) returning *`;
+    }
+
     return Response.json({
       session: locals.session,
       user: user,

@@ -28,12 +28,6 @@ export async function GET({ url }) {
   });
 }
 
-// JSON {
-//  "subrabbit": "string",
-//  "title": "string",
-//  "content": "string",
-//  "author": "string"
-//}
 export async function POST({ request }) {
   var body = await request.json();
 
@@ -47,6 +41,11 @@ export async function POST({ request }) {
   let id = Math.random().toString(36).substring(4);
 
   let user = await sql`select * from users where clerk_id = ${body.author}`;
+
+  if (user.length === 0) {
+    user =
+      await sql`insert into users (clerk_id) values (${body.author}) returning *`;
+  }
 
   await sql`insert into posts (id_rand, title, content, subrabbit, subrabbit_name, author, author_clerk_id) values (${id}, ${body.title}, ${body.content}, ${result[0].id}, ${body.subrabbit}, ${user[0].id}, ${body.author})`;
 
