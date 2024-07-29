@@ -6,6 +6,8 @@
 
     import { goto } from "$app/navigation";
 
+    import { onMount } from "svelte";
+
     // State variable to control the visibility of the popup
     let showPopup = false;
     let communityName = "";
@@ -18,6 +20,21 @@
         communityDescription = "";
         communityError = "";
     }
+
+    let json = { data: { subrabbits_interacted_with: [] } };
+
+    onMount(async () => {
+        let self = await fetch(`/api/u/self`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        if (self.status == 200) {
+            json = await self.json();
+        }
+    });
 
     async function createCommunity() {
         console.log(communityName);
@@ -80,6 +97,14 @@
                         <div class="h-8"><MdAdd /></div>
                         <p class="text-base m-auto">Create a community</p>
                     </button>
+                    {#each json.data.subrabbits_interacted_with as subrabbit}
+                        <button
+                            class="flex flex-row w-full transition-all duration-300 hover:bg-black/15 p-1 rounded-lg"
+                            on:click={() => goto(`/r/${subrabbit}`)}
+                        >
+                            r/{subrabbit}
+                        </button>
+                    {/each}
                 </div>
             </div>
         </SignedIn>

@@ -7,7 +7,8 @@ async function createTables() {
   await sql`CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     clerk_id TEXT UNIQUE NOT NULL,
-    votes JSONB DEFAULT '{}'
+    votes JSONB DEFAULT '{}',
+      subrabbits_interacted_with TEXT[] DEFAULT '{}'
   );`;
 
   await sql`CREATE TABLE IF NOT EXISTS sessions (

@@ -38,7 +38,7 @@
                 json.posts[index].username = userData.username;
             }
 
-            let result = await fetch(`/api/u/${window?.Clerk?.user?.id}`);
+            let result = await fetch(`/api/u/self`);
             selfData = await result.json();
 
             console.log(json);

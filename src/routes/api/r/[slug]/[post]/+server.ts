@@ -61,6 +61,24 @@ export async function POST({ url, request }) {
 
   let comment = await sql`select * from comments where id_rand = ${id}`;
 
+  let users = await sql`select * from users where id = ${body.user_id}`;
+  let user = users[0];
+
+  if (user.subrabbits_interacted_with.includes(body.subrabbit_name)) {
+    let array = user.subrabbits_interacted_with;
+
+    array = array.filter((item) => item !== body.subrabbit_name);
+
+    user.subrabbits_interacted_with.push(body.subrabbit_name);
+
+    await sql`update users set subrabbits_interacted_with = ${user.subrabbits_interacted_with} where id = ${user.id}`;
+  } else {
+    console.log("huh");
+    user.subrabbits_interacted_with.push(body.subrabbit_name);
+
+    await sql`update users set subrabbits_interacted_with = ${user.subrabbits_interacted_with} where id = ${user.id}`;
+  }
+
   return Response.json({
     message: "Created",
     status: 201,

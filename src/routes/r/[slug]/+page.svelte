@@ -47,7 +47,7 @@
                 json.posts[index].username = userData.username;
             }
 
-            let result = await fetch(`/api/u/${window?.Clerk?.user?.id}`);
+            let result = await fetch(`/api/u/self`);
             selfData = await result.json();
 
             console.log(json);
@@ -59,6 +59,8 @@
 
     async function votePost(vote, post) {
         try {
+            console.log(selfData.data);
+
             let response = await fetch(`/api/r/${slug}/${post.id_rand}/vote`, {
                 method: "POST",
                 headers: {

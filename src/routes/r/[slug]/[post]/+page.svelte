@@ -39,9 +39,7 @@
                     post.imageUrl = userData.imageUrl;
                     post.username = userData.username;
 
-                    let result = await fetch(
-                        `/api/u/${window?.Clerk?.user?.id}`,
-                    );
+                    let result = await fetch(`/api/u/self`);
                     selfData = await result.json();
 
                     json.comments.forEach(async (post, index) => {
@@ -112,6 +110,7 @@
                 user_id: selfData.data.id,
                 clerk_id: window?.Clerk.user.id,
                 subrabbit: post.subrabbit,
+                subrabbit_name: json.subrabbit.name,
                 post: post.id,
             }),
         });
@@ -119,8 +118,8 @@
         if (result.status === 200) {
             let data = await result.json();
 
-            data.comment.imageUrl = selfData.imageUrl;
-            data.comment.username = selfData.username;
+            data.comment.imageUrl = selfData.user.imageUrl;
+            data.comment.username = selfData.user.username;
             data.comment.votes = { 1: 0, "-1": 0 };
             data.comment.author_clerk_id = selfData.data.id;
 
