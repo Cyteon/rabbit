@@ -39,7 +39,7 @@
 
             for (let index = 0; index < json.posts.length; index++) {
                 const post = json.posts[index];
-                let user = await fetch(`/api/u/${post.author_clerk_id}`);
+                let user = await fetch(`/api/u/id_${post.author_clerk_id}`);
                 let userData = await user.json();
 
                 console.log(userData);
@@ -126,7 +126,7 @@
                             r/{post.subrabbit_name}
                         </a>
                         <a
-                            href={`/u/${post.author}`}
+                            href={`/u/${post.username}`}
                             class="text-sm text-ctp-text">{post.username}</a
                         >
                     </div>

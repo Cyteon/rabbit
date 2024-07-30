@@ -43,7 +43,7 @@
 
                 if (json.status === 200) {
                     post = json.data;
-                    let user = await fetch(`/api/u/${post.author_clerk_id}`);
+                    let user = await fetch(`/api/u/id_${post.author_clerk_id}`);
                     let userData = await user.json();
 
                     post.imageUrl = userData.imageUrl;
@@ -51,7 +51,7 @@
 
                     json.comments.forEach(async (post, index) => {
                         let user = await fetch(
-                            `/api/u/${post.author_clerk_id}`,
+                            `/api/u/id_${post.author_clerk_id}`,
                         );
                         let userData = await user.json();
 

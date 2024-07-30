@@ -27,29 +27,33 @@ export async function GET({ url, request, locals }) {
     });
   }
 
-  let user = await clerkClient.users.getUser(slug);
+  if (slug.startsWith("id_")) {
+    slug = slug.slice(3);
 
-  if (user == null) {
-    return Response.json({ message: "User not found", status: 404 });
+    let user = await clerkClient.users.getUser(slug);
+
+    if (user == null) {
+      return Response.json({ message: "User not found", status: 404 });
+    }
+
+    let result = await sql`select * from users where clerk_id = ${user.id}`;
+
+    if (result.length === 0) {
+      result =
+        await sql`insert into users (clerk_id) values (${user.id}) returning *`;
+    }
+
+    let data = {
+      status: 200,
+      id: user.id,
+      banned: user.banned,
+      imageUrl: user.imageUrl,
+      username: user.username,
+      publicMetadata: user.publicMetadata,
+      lastActiveAt: user.lastActiveAt,
+      createdAt: user.createdAt,
+    };
+
+    return Response.json(data);
   }
-
-  let result = await sql`select * from users where clerk_id = ${user.id}`;
-
-  if (result.length === 0) {
-    result =
-      await sql`insert into users (clerk_id) values (${user.id}) returning *`;
-  }
-
-  let data = {
-    status: 200,
-    id: user.id,
-    banned: user.banned,
-    imageUrl: user.imageUrl,
-    username: user.username,
-    publicMetadata: user.publicMetadata,
-    lastActiveAt: user.lastActiveAt,
-    createdAt: user.createdAt,
-  };
-
-  return Response.json(data);
 }
