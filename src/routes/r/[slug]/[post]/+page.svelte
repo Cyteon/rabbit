@@ -13,6 +13,9 @@
     import FaCaretSquareDown from "svelte-icons/fa/FaCaretSquareDown.svelte";
     import { onMount } from "svelte";
 
+    import { marked } from "marked";
+    import DOMPurify from "dompurify";
+
     let notFound = false;
     let json = { data: {}, post: {}, subrabbit: {}, comments: [] };
 
@@ -58,6 +61,10 @@
                         json.comments[index].imageUrl = userData.imageUrl;
                         json.comments[index].username = userData.username;
                     });
+
+                    post.content = DOMPurify.sanitize(
+                        marked.parse(post.content),
+                    );
                 } else if (json.status === 404) {
                     notFound = true;
                     console.log("404");
@@ -70,6 +77,10 @@
             console.error("Error fetching data:", error);
             notFound = true;
         }
+
+        setTimeout(() => {
+            Prism.highlightAll();
+        }, 1000);
     });
 
     async function votePost(vote) {
@@ -135,6 +146,24 @@
     }
 </script>
 
+<head>
+    <!-- Include Prism CSS -->
+    <link
+        href="https://rawcdn.githack.com/accord-chat/assets/ae8cfe1fe24ec0e5566ecf9b5963bf4750a982d5/code/prismjs/prism.css"
+        rel="stylesheet"
+    />
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.css"
+    />
+
+    <!-- Include Prism JS -->
+    <script
+        src="https://rawcdn.githack.com/accord-chat/assets/ae8cfe1fe24ec0e5566ecf9b5963bf4750a982d5/code/prismjs/prism.js"
+    ></script>
+</head>
+
 <body class="bg-ctp-base h-[100vh]">
     <Navbar />
     {#if notFound}
@@ -172,11 +201,11 @@
                     </div>
                 </div>
                 <h1 class="text-2xl text-ctp-text">{post.title}</h1>
-                <p
-                    class="text-base text-ctp-text break-words whitespace-pre-wrap"
+                <divb
+                    class=" text-ctp-text break-words whitespace-pre-wrap prose"
                 >
-                    {post.content}
-                </p>
+                    {@html post.content}
+                </divb>
                 <div class="flex flex-row mt-3">
                     <div
                         class="text-ctp-text bg-ctp-surface0 w-fit py-2 px-3 flex flex-row rounded-full"

@@ -15,6 +15,7 @@
     "@sveltejs/kit": "^2.0.0",
     "@sveltejs/vite-plugin-svelte": "^3.0.0",
     "@tailwindcss/forms": "^0.5.7",
+    "@tailwindcss/typography": "^0.5.14",
     "autoprefixer": "^10.4.19",
     "postcss": "^8.4.40",
     "svelte": "^4.2.7",
@@ -28,6 +29,8 @@
     "@clerk/backend": "^1.4.1",
     "@preline/accordion": "^2.4.1",
     "clerk-sveltekit": "^0.4.2",
+    "dompurify": "^3.1.6",
+    "marked": "^14.1.0",
     "mongodb": "^6.8.0",
     "postgres": "^3.4.4",
     "svelte-icons": "^2.1.0"
