@@ -147,21 +147,9 @@
 </script>
 
 <head>
-    <!-- Include Prism CSS -->
-    <link
-        href="https://rawcdn.githack.com/accord-chat/assets/ae8cfe1fe24ec0e5566ecf9b5963bf4750a982d5/code/prismjs/prism.css"
-        rel="stylesheet"
-    />
-
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.css"
-    />
-
-    <!-- Include Prism JS -->
-    <script
-        src="https://rawcdn.githack.com/accord-chat/assets/ae8cfe1fe24ec0e5566ecf9b5963bf4750a982d5/code/prismjs/prism.js"
-    ></script>
+    {#if post}
+        <meta property="og:title" content={post.title} />
+    {/if}
 </head>
 
 <body class="bg-ctp-base h-[100vh]">

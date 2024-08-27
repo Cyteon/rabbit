@@ -5,6 +5,9 @@
     import FaCaretSquareUp from "svelte-icons/fa/FaCaretSquareUp.svelte";
     import FaCaretSquareDown from "svelte-icons/fa/FaCaretSquareDown.svelte";
 
+    import { marked } from "marked";
+    import DOMPurify from "dompurify";
+
     import { onMount } from "svelte";
 
     let json = { posts: [] };
@@ -46,10 +49,18 @@
 
                 json.posts[index].imageUrl = userData.imageUrl;
                 json.posts[index].username = userData.username;
+
+                json.posts[index].content = DOMPurify.sanitize(
+                    marked.parse(json.posts[index].content),
+                );
             }
         } catch (error) {
             console.error("Error fetching data:", error);
         }
+
+        setTimeout(() => {
+            Prism.highlightAll();
+        }, 500);
     });
 
     async function votePost(vote, post) {
@@ -134,9 +145,9 @@
                 <h1 class="text-2xl text-ctp-text">{post.title}</h1>
                 <div>
                     <p
-                        class="text-base text-ctp-text max-h-24 overflow-hidden whitespace-pre-wrap"
+                        class="text-base text-ctp-text max-h-24 overflow-hidden whitespace-pre-wrap prose prose-sm"
                     >
-                        {post.content}
+                        {@html post.content}
                     </p>
                 </div>
                 <div class="flex flex-row">
