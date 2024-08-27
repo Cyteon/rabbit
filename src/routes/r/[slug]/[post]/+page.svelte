@@ -147,9 +147,7 @@
 </script>
 
 <head>
-    {#if post}
-        <meta property="og:title" content={post.title} />
-    {/if}
+    <meta property="og:title" content={post.title} />
 </head>
 
 <body class="bg-ctp-base h-[100vh]">
