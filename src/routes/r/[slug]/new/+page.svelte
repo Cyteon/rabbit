@@ -65,8 +65,7 @@
     }
 </script>
 
-<body class="bg-ctp-base h-[100vh]">
-    <Navbar />
+<body class="bg-ctp-base text-ctp-text">
     {#if notFound}
         <div class="flex flex-col items-center justify-center min-h-[90%]">
             <h1 class="text-5xl text-ctp-red">404 Not Found</h1>
@@ -77,35 +76,46 @@
         </div>
     {:else}
         <SignedIn>
-            <div
-                class="flex flex-col bg-ctp-surface0 min-h-[90%] rounded-md mx-[25%] mt-5"
-            >
-                <div class="flex flex-col m-5">
-                    <input
-                        class="mt-1 block text-white w-full rounded-md border-ctp-overlay2 border-[1px] p-2 bg-ctp-overlay2 placeholder-gray-600"
-                        type="text"
-                        placeholder="Post Title"
-                        bind:value={title}
-                    />
-                    <textarea
-                        class="mt-2 block text-white w-full rounded-md border-ctp-overlay2 border-[1px] p-2 bg-ctp-overlay2 placeholder-gray-600"
-                        type="text"
-                        rows="12"
-                        placeholder="Post Content"
-                        bind:value={content}
-                    />
-                    <button
-                        class="mt-4 bg-ctp-blue text-gray-800 p-2 rounded w-full"
-                        on:click={createPost}
-                    >
-                        Create
-                    </button>
+            <Navbar />
+            <div class="w-full flex flex-row">
+                <Sidebar />
+                <div
+                    class="flex flex-col bg-ctp-surface0 rounded-md w-full m-5 max-h-screen h-fit"
+                >
+                    <div class="flex flex-col m-5">
+                        <p class="text-lg">
+                            New Post in
+                            <span class="font-semibold">r/{slug}</span>
+                        </p>
+                        <input
+                            class="mt-1 w-full rounded-md p-2 bg-ctp-mantle"
+                            type="text"
+                            placeholder="Post Title"
+                            bind:value={title}
+                        />
+                        <textarea
+                            class="mt-1 w-full rounded-md p-2 bg-ctp-mantle"
+                            type="text"
+                            rows="12"
+                            placeholder="Post Content"
+                            bind:value={content}
+                        />
+                        <button
+                            class="mt-4 bg-ctp-blue text-gray-800 p-2 rounded w-full"
+                            on:click={createPost}
+                        >
+                            Create
+                        </button>
+                    </div>
                 </div>
             </div>
         </SignedIn>
         <SignedOut>
-            <div class="flex absolute justify-center h-[100%] w-[100%]">
-                <div class="mt-auto mb-auto text-black-pls">
+            <div class="absolute w-full">
+                <Navbar />
+            </div>
+            <div class="flex justify-center h-screen w-[100%]">
+                <div class="mt-auto mb-auto">
                     <SignIn redirectUrl={`/r/${slug}/new`} />
                 </div>
             </div>

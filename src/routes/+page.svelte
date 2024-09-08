@@ -105,74 +105,94 @@
 
 <body class="bg-ctp-base h-[100vh]">
     <Navbar />
-    <Sidebar />
-    <div
-        class="flex flex-col bg-ctp-surface0 min-h-[90%] ml-[20%] mr-[5%] mt-5 rounded-xl"
-    >
-        {#each json.posts as post}
-            <div
-                class="flex flex-col bg-ctp-surface1 rounded-md m-3 p-3 transition-all duration-300 hover:scale-[100.5%] overflow-hidden"
-                on:click={() => {
-                    window.location.href = `/r/${post.subrabbit_name}/${post.id_rand}`;
-                }}
-            >
-                <div class="flex flex-row">
-                    <a
-                        href={`/u/${post.username}`}
-                        class="my-auto"
-                        on:click|stopPropagation
-                    >
-                        <img
-                            class="h-8 w-8 rounded-full mr-2"
-                            src={post.imageUrl}
-                            alt="avatar"
-                        />
-                    </a>
-                    <div class="flex flex-col">
+    <div class="flex flex-row">
+        <Sidebar />
+        <div
+            class="flex flex-col bg-ctp-surface0 min-h-[90%] w-full m-5 rounded-xl"
+        >
+            {#each json.posts as post}
+                <div
+                    class="flex flex-col bg-ctp-surface1 rounded-md m-3 p-3 transition-all duration-300 hover:scale-[100.5%] overflow-hidden"
+                    on:click={() => {
+                        window.location.href = `/r/${post.subrabbit_name}/${post.id_rand}`;
+                    }}
+                >
+                    <div class="flex flex-row">
                         <a
-                            href={`/r/${post.subrabbit_name}`}
-                            class="text-sm text-ctp-text font-bold"
+                            href={`/u/${post.author}`}
+                            class="my-auto"
                             on:click|stopPropagation
                         >
-                            r/{post.subrabbit_name}
+                            <img
+                                class="h-8 w-8 rounded-full mr-2"
+                                src={post.imageUrl}
+                                alt="avatar"
+                            />
                         </a>
-                        <a
-                            href={`/u/${post.username}`}
-                            class="text-sm text-ctp-text">{post.username}</a
-                        >
+                        <div class="flex flex-col">
+                            <a
+                                href={`/r/${post.subrabbit_name}`}
+                                class="text-sm text-ctp-text font-bold"
+                                on:click|stopPropagation
+                            >
+                                r/{post.subrabbit_name}
+                            </a>
+                            <a
+                                href={`/u/${post.author}`}
+                                class="text-sm text-ctp-text">{post.username}</a
+                            >
+                        </div>
                     </div>
-                </div>
-                <h1 class="text-2xl text-ctp-text">{post.title}</h1>
-                <div>
-                    <p
-                        class="text-base text-ctp-text max-h-24 overflow-hidden whitespace-pre-wrap prose prose-sm"
-                    >
-                        {@html post.content}
-                    </p>
-                </div>
-                <div class="flex flex-row">
-                    <div
-                        class="text-ctp-text bg-ctp-surface0 w-fit py-2 px-3 flex flex-row rounded-full"
-                    >
-                        {#if post.id in selfData.data.votes}
-                            {#if selfData.data.votes[post.id] == -1}
-                                <button
-                                    on:click={(event) => upvote(event, post)}
-                                    class="w-5 transition-all duration-300 hover:scale-110"
-                                >
-                                    <FaCaretSquareUp />
-                                </button>
-                                <p class="mx-2">{post.votes}</p>
-                                <button
-                                    on:click={(event) => downvote(event, post)}
-                                    class="w-5 transition-all duration-300 hover:scale-110 text-ctp-blue"
-                                >
-                                    <FaCaretSquareDown />
-                                </button>
+                    <h1 class="text-2xl text-ctp-text">{post.title}</h1>
+                    <div>
+                        <p
+                            class="text-base text-ctp-text max-h-24 overflow-hidden whitespace-pre-wrap prose prose-sm"
+                        >
+                            {@html post.content}
+                        </p>
+                    </div>
+                    <div class="flex flex-row">
+                        <div
+                            class="text-ctp-text bg-ctp-surface0 w-fit py-2 px-3 flex flex-row rounded-full"
+                        >
+                            {#if post.id in selfData.data.votes}
+                                {#if selfData.data.votes[post.id] == -1}
+                                    <button
+                                        on:click={(event) =>
+                                            upvote(event, post)}
+                                        class="w-5 transition-all duration-300 hover:scale-110"
+                                    >
+                                        <FaCaretSquareUp />
+                                    </button>
+                                    <p class="mx-2">{post.votes}</p>
+                                    <button
+                                        on:click={(event) =>
+                                            downvote(event, post)}
+                                        class="w-5 transition-all duration-300 hover:scale-110 text-ctp-blue"
+                                    >
+                                        <FaCaretSquareDown />
+                                    </button>
+                                {:else}
+                                    <button
+                                        on:click={(event) =>
+                                            upvote(event, post)}
+                                        class="w-5 transition-all duration-300 hover:scale-110 text-ctp-blue"
+                                    >
+                                        <FaCaretSquareUp />
+                                    </button>
+                                    <p class="mx-2">{post.votes}</p>
+                                    <button
+                                        on:click={(event) =>
+                                            downvote(event, post)}
+                                        class="w-5 transition-all duration-300 hover:scale-110"
+                                    >
+                                        <FaCaretSquareDown />
+                                    </button>
+                                {/if}
                             {:else}
                                 <button
                                     on:click={(event) => upvote(event, post)}
-                                    class="w-5 transition-all duration-300 hover:scale-110 text-ctp-blue"
+                                    class="w-5 transition-all duration-300 hover:scale-110"
                                 >
                                     <FaCaretSquareUp />
                                 </button>
@@ -184,24 +204,10 @@
                                     <FaCaretSquareDown />
                                 </button>
                             {/if}
-                        {:else}
-                            <button
-                                on:click={(event) => upvote(event, post)}
-                                class="w-5 transition-all duration-300 hover:scale-110"
-                            >
-                                <FaCaretSquareUp />
-                            </button>
-                            <p class="mx-2">{post.votes}</p>
-                            <button
-                                on:click={(event) => downvote(event, post)}
-                                class="w-5 transition-all duration-300 hover:scale-110"
-                            >
-                                <FaCaretSquareDown />
-                            </button>
-                        {/if}
+                        </div>
                     </div>
                 </div>
-            </div>
-        {/each}
+            {/each}
+        </div>
     </div>
 </body>

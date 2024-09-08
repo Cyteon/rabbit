@@ -5,9 +5,6 @@
     let slug = data.slug;
 
     import Navbar from "$lib/components/navbar.svelte";
-    import Sidebar from "$lib/components/sidebar.svelte";
-    import SignedIn from "clerk-sveltekit/client/SignedIn.svelte";
-    import SignedOut from "clerk-sveltekit/client/SignedOut.svelte";
 
     import FaCaretSquareUp from "svelte-icons/fa/FaCaretSquareUp.svelte";
     import FaCaretSquareDown from "svelte-icons/fa/FaCaretSquareDown.svelte";
@@ -15,6 +12,7 @@
 
     import { marked } from "marked";
     import DOMPurify from "dompurify";
+    import Sidebar from "$lib/components/sidebar.svelte";
 
     let notFound = false;
     let json = { data: {}, post: {}, subrabbit: {}, comments: [] };
@@ -148,6 +146,12 @@
 
 <head>
     <meta property="og:title" content={post.title} />
+    <meta property="og:description" content={post.content} />
+    <meta
+        property="og:url"
+        content={`https://rabbit.cyteon.tech/r/${slug}/${data.post}`}
+    />
+    <meta property="og:type" content="website" />
 </head>
 
 <body class="bg-ctp-base h-[100vh]">
@@ -161,68 +165,85 @@
             >
         </div>
     {:else}
-        <div
-            class="flex flex-col bg-ctp-surface0 min-h-[90%] rounded-md mx-[10%] mt-5"
-        >
-            <div class="flex flex-col bg-ctp-surface1 rounded-md m-3 p-3">
-                <div class="flex flex-row">
-                    <a href={`/u/${post.author}`} class="my-auto">
-                        <img
-                            class="h-8 w-8 rounded-full mr-2"
-                            src={post.imageUrl}
-                            alt="avatar"
-                        />
-                    </a>
-                    <div class="flex flex-col">
-                        <a
-                            href={`/r/${json.subrabbit.name}`}
-                            class="text-sm text-ctp-text font-bold"
-                        >
-                            r/{json.subrabbit.name}
+        <div class="flex flex-grow-0">
+            <Sidebar />
+            <div
+                class="flex flex-col bg-ctp-surface0 min-h-[90%] w-full m-5 rounded-xl"
+            >
+                <div class="flex flex-col bg-ctp-surface1 rounded-md m-3 p-3">
+                    <div class="flex flex-row">
+                        <a href={`/u/${post.author}`} class="my-auto">
+                            <img
+                                class="h-8 w-8 rounded-full mr-2"
+                                src={post.imageUrl}
+                                alt="avatar"
+                            />
                         </a>
-                        <a
-                            href={`/u/${post.author}`}
-                            class="text-sm text-ctp-text">{post.username}</a
-                        >
+                        <div class="flex flex-col">
+                            <a
+                                href={`/r/${json.subrabbit.name}`}
+                                class="text-sm text-ctp-text font-bold"
+                            >
+                                r/{json.subrabbit.name}
+                            </a>
+                            <a
+                                href={`/u/${post.author}`}
+                                class="text-sm text-ctp-text">{post.username}</a
+                            >
+                        </div>
                     </div>
-                </div>
-                <h1 class="text-2xl text-ctp-text">{post.title}</h1>
-                <divb
-                    class=" text-ctp-text break-words whitespace-pre-wrap prose"
-                >
-                    {@html post.content}
-                </divb>
-                <div class="flex flex-row mt-3">
-                    <div
-                        class="text-ctp-text bg-ctp-surface0 w-fit py-2 px-3 flex flex-row rounded-full"
+                    <h1 class="text-2xl text-ctp-text">{post.title}</h1>
+                    <divb
+                        class=" text-ctp-text break-words whitespace-pre-wrap prose"
                     >
-                        {#if post.id in selfData.data.votes}
-                            {#if selfData.data.votes[post.id] == -1}
+                        {@html post.content}
+                    </divb>
+                    <div class="flex flex-row mt-3">
+                        <div
+                            class="text-ctp-text bg-ctp-surface0 w-fit py-2 px-3 flex flex-row rounded-full"
+                        >
+                            {#if post.id in selfData.data.votes}
+                                {#if selfData.data.votes[post.id] == -1}
+                                    <button
+                                        on:click={upvote}
+                                        class="w-5 transition-all duration-300 hover:scale-110"
+                                    >
+                                        <FaCaretSquareUp />
+                                    </button>
+                                    <p class="mx-2">
+                                        {post.votes}
+                                    </p>
+                                    <button
+                                        on:click={downvote}
+                                        class="w-5 transition-all duration-300 hover:scale-110 text-ctp-blue"
+                                    >
+                                        <FaCaretSquareDown />
+                                    </button>
+                                {:else}
+                                    <button
+                                        on:click={upvote}
+                                        class="w-5 transition-all duration-300 hover:scale-110 text-ctp-blue"
+                                    >
+                                        <FaCaretSquareUp />
+                                    </button>
+                                    <p class="mx-2">
+                                        {post.votes}
+                                    </p>
+                                    <button
+                                        on:click={downvote}
+                                        class="w-5 transition-all duration-300 hover:scale-110"
+                                    >
+                                        <FaCaretSquareDown />
+                                    </button>
+                                {/if}
+                            {:else}
                                 <button
                                     on:click={upvote}
                                     class="w-5 transition-all duration-300 hover:scale-110"
                                 >
                                     <FaCaretSquareUp />
                                 </button>
-                                <p class="mx-2">
-                                    {post.votes}
-                                </p>
-                                <button
-                                    on:click={downvote}
-                                    class="w-5 transition-all duration-300 hover:scale-110 text-ctp-blue"
-                                >
-                                    <FaCaretSquareDown />
-                                </button>
-                            {:else}
-                                <button
-                                    on:click={upvote}
-                                    class="w-5 transition-all duration-300 hover:scale-110 text-ctp-blue"
-                                >
-                                    <FaCaretSquareUp />
-                                </button>
-                                <p class="mx-2">
-                                    {post.votes}
-                                </p>
+                                <p class="mx-2">{post.votes}</p>
                                 <button
                                     on:click={downvote}
                                     class="w-5 transition-all duration-300 hover:scale-110"
@@ -230,58 +251,46 @@
                                     <FaCaretSquareDown />
                                 </button>
                             {/if}
-                        {:else}
-                            <button
-                                on:click={upvote}
-                                class="w-5 transition-all duration-300 hover:scale-110"
-                            >
-                                <FaCaretSquareUp />
-                            </button>
-                            <p class="mx-2">{post.votes}</p>
-                            <button
-                                on:click={downvote}
-                                class="w-5 transition-all duration-300 hover:scale-110"
-                            >
-                                <FaCaretSquareDown />
-                            </button>
-                        {/if}
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="ml-3 mr-3 p-2 flex flex-row bg-ctp-surface1 rounded-md">
-                <input
-                    placeholder="Add a comment"
-                    class="rounded-md p-2 mr-2 w-full bg-ctp-mantle text-ctp-text"
-                    bind:value={comment}
-                />
-                <button
-                    class="bg-ctp-blue text-gray-800 px-3 py-2 rounded-md"
-                    on:click={addComment}
-                >
-                    Send
-                </button>
-            </div>
-            {#each json.comments as comment}
                 <div
-                    class="ml-3 mr-3 mt-3 p-2 flex flex-col bg-ctp-surface1 rounded-md text-ctp-text"
+                    class="mx-3 mb-3 p-2 flex flex-row bg-ctp-surface1 rounded-md"
                 >
-                    <div class="flex flex-row">
-                        <a href={`/u/${comment.author}`} class="my-auto">
-                            <img
-                                class="h-8 w-8 rounded-full mr-2"
-                                src={comment.imageUrl}
-                                alt="avatar"
-                            />
-                        </a>
-                        <a
-                            href={`/u/${comment.author}`}
-                            class="text-base text-ctp-text mt-auto mb-auto"
-                            >{comment.username}</a
-                        >
-                    </div>
-                    <p>{comment.content}</p>
+                    <input
+                        placeholder="Add a comment"
+                        class="rounded-md p-2 mr-2 w-full bg-ctp-mantle text-ctp-text"
+                        bind:value={comment}
+                    />
+                    <button
+                        class="bg-ctp-blue text-gray-800 px-3 py-2 rounded-md"
+                        on:click={addComment}
+                    >
+                        Send
+                    </button>
                 </div>
-            {/each}
+                {#each json.comments as comment}
+                    <div
+                        class="ml-3 mr-3 mb-3 p-2 flex flex-col bg-ctp-surface1 rounded-md text-ctp-text"
+                    >
+                        <div class="flex flex-row">
+                            <a href={`/u/${comment.author}`} class="my-auto">
+                                <img
+                                    class="h-8 w-8 rounded-full mr-2"
+                                    src={comment.imageUrl}
+                                    alt="avatar"
+                                />
+                            </a>
+                            <a
+                                href={`/u/${comment.author}`}
+                                class="text-base text-ctp-text mt-auto mb-auto"
+                                >{comment.username}</a
+                            >
+                        </div>
+                        <p>{comment.content}</p>
+                    </div>
+                {/each}
+            </div>
         </div>
     {/if}
 </body>

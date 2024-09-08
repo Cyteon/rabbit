@@ -12,24 +12,17 @@ initializeClerkClient(PUBLIC_CLERK_PUBLISHABLE_KEY, {
   signUpUrl: "/register",
   appearance: {
     variables: {
-      colorPrimary: "#8caaee",
-      colorBackground: "#414559",
-      colorText: "#c6d0f5",
+      colorPrimary: "#8aadf4",
+      colorBackground: "#363a4f",
+      colorText: "#cad3f5",
       colorTextSecondary: "#b5bfe2",
-      colorDanger: "#e78284",
-      colorSuccess: "#a6d189",
+      colorDanger: "#ed8796",
+      colorSuccess: "#a6da95",
+      colorWarning: "#eed49f",
       colorAlphaShade: "#ffffff",
-      colorInputText: "#c6d0f5",
-    },
-    signIn: {
-      variables: {
-        colorInputText: "#000000",
-      },
-    },
-    signUp: {
-      variables: {
-        colorInputText: "#000000",
-      },
+      colorInputText: "#cad3f5",
+      colorTextOnPrimaryBackground: "#181926",
+      colorInputBackground: "#1e2030",
     },
   },
 });

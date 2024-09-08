@@ -56,4 +56,23 @@ export async function GET({ url, request, locals }) {
 
     return Response.json(data);
   }
+
+  let data = await sql`select * from users where id = ${parseInt(slug)}`;
+
+  if (data.length === 0) {
+    return Response.json({ message: "User not found", status: 404 });
+  }
+
+  let user = await clerkClient.users.getUser(data[0].clerk_id);
+
+  return Response.json({
+    status: 200,
+    id: user.id,
+    banned: user.banned,
+    imageUrl: user.imageUrl,
+    username: user.username,
+    publicMetadata: user.publicMetadata,
+    lastActiveAt: user.lastActiveAt,
+    createdAt: user.createdAt,
+  });
 }

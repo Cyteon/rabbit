@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import MdHome from "svelte-icons/md/MdHome.svelte";
     import MdArrowDropDown from "svelte-icons/md/MdArrowDropDown.svelte";
     import MdAdd from "svelte-icons/md/MdAdd.svelte";
@@ -13,6 +13,16 @@
     let communityName = "";
     let communityDescription = "";
     let communityError = "";
+
+    let newestSubrabbits: [
+        {
+            id: number;
+            name: string;
+            description: string;
+            owner: string;
+            created_at: string;
+        },
+    ] = [];
 
     function togglePopup() {
         showPopup = !showPopup;
@@ -33,6 +43,13 @@
         } catch (err) {
             console.error("Error fetching data:", err);
         }
+
+        var response = await fetch("/api/subrabbits/sort/newest");
+
+        if (response.status == 200) {
+            var body = await response.json();
+            newestSubrabbits = body.data;
+        }
     });
 
     async function createCommunity() {
@@ -47,7 +64,7 @@
             body: JSON.stringify({
                 name: communityName,
                 description: communityDescription,
-                owner: window.Clerk?.user.id,
+                owner: window?.Clerk?.user?.id,
             }),
         });
 
@@ -60,20 +77,21 @@
         }
     }
 
-    // State variable to control the visibility of the accordion
     let showAccordion = false;
+    let showAccordion2 = false;
 </script>
 
 <nav
-    class="bg-ctp-mantle border-ctp-overlay2 border-r-[1px] w-[15%] h-[100%] text-ctp-text fixed"
+    class="bg-ctp-mantle border-ctp-surface0 border-r-[1px] w-fit h-screen text-ctp-text sticky top-0"
 >
     <div class="m-2">
-        <button
+        <a
             class="flex flex-row w-full transition-all min-h-12 duration-300 hover:bg-black/15 p-1 rounded-lg"
+            href="/"
         >
             <div class="h-8 mt-auto mb-auto"><MdHome /></div>
             <p class="text-base m-auto">Home</p>
-        </button>
+        </a>
         <SignedIn>
             <hr class="border-gray-600 m-1 border-t-[1px]" />
             <div class="accordion">
@@ -82,7 +100,7 @@
                     class="flex flex-row items-center justify-between cursor-pointer min-h-12 p-1 rounded-lg transition-all duration-300 hover:bg-black/15"
                     on:click={() => (showAccordion = !showAccordion)}
                 >
-                    <p class="font-bold">Communities</p>
+                    <p>Communities</p>
                     <div class="h-6"><MdArrowDropDown /></div>
                 </div>
                 <div
@@ -107,19 +125,43 @@
                 </div>
             </div>
         </SignedIn>
+        <hr class="border-gray-600 m-1 border-t-[1px]" />
+        <div class="accordion">
+            <div
+                role="aria-button"
+                class="flex flex-row items-center justify-between cursor-pointer min-h-12 p-1 rounded-lg transition-all duration-300 hover:bg-black/15"
+                on:click={() => (showAccordion2 = !showAccordion2)}
+            >
+                <p>Newest Communities</p>
+                <div class="h-6"><MdArrowDropDown /></div>
+            </div>
+            <div
+                class="accordion-content"
+                style:max-height={showAccordion2 ? "200px" : "0px"}
+            >
+                {#each newestSubrabbits as subrabbit}
+                    <button
+                        class="flex flex-row w-full transition-all duration-300 hover:bg-black/15 p-1 rounded-lg"
+                        on:click={() => goto(`/r/${subrabbit.name}`)}
+                    >
+                        r/{subrabbit.name}
+                    </button>
+                {/each}
+            </div>
+        </div>
     </div>
 </nav>
 
 {#if showPopup}
     <div class="fixed inset-0 bg-black/50 flex items-center justify-center">
-        <div class="bg-ctp-surface2 p-6 rounded-lg shadow-lg">
+        <div class="bg-ctp-surface0 p-6 rounded-lg shadow-lg">
             <h2 class="text-lg font-bold text-ctp-text">Create a Community</h2>
 
             <form class="mt-4">
                 <label class="block">
                     <span class="text-ctp-text">Name</span>
                     <input
-                        class="mt-1 block text-white w-full rounded-md border-ctp-overlay2 border-[1px] p-2 bg-ctp-overlay2 placeholder-gray-600"
+                        class="mt-1 text-ctp-text w-full rounded-md p-2 bg-ctp-mantle"
                         type="text"
                         onkeypress="return event.charCode != 32"
                         placeholder="Community Name"
@@ -129,7 +171,7 @@
                 <label class="block mt-2">
                     <span class="text-ctp-text">Description</span>
                     <textarea
-                        class="mt-1 block text-white w-full rounded-md border-ctp-overlay2 border-[1px] p-2 bg-ctp-overlay2 placeholder-gray-600"
+                        class="mt-1 text-ctp-text w-full rounded-md p-2 bg-ctp-mantle"
                         placeholder="Community Description"
                         bind:value={communityDescription}
                     ></textarea>

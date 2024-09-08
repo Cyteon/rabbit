@@ -8,7 +8,7 @@ async function createTables() {
     id SERIAL PRIMARY KEY,
     clerk_id TEXT UNIQUE NOT NULL,
     votes JSONB DEFAULT '{}',
-      subrabbits_interacted_with TEXT[] DEFAULT '{}'
+    subrabbits_interacted_with TEXT[] DEFAULT '{}'
   );`;
 
   await sql`CREATE TABLE IF NOT EXISTS sessions (
@@ -21,7 +21,8 @@ async function createTables() {
     id SERIAL PRIMARY KEY,
     name TEXT UNIQUE NOT NULL,
     description TEXT NOT NULL,
-    owner INTEGER REFERENCES users(id)
+    owner INTEGER REFERENCES users(id),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   );`;
 
   await sql`CREATE TABLE IF NOT EXISTS posts (
