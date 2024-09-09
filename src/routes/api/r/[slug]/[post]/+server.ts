@@ -56,13 +56,15 @@ export async function POST({ url, request }) {
   let body = await request.json();
 
   let id = Math.random().toString(36).substring(4);
+  
+  let users = await sql`select * from users where id = ${body.user_id}`;
+  let user = users[0];
 
-  await sql`insert into comments (id_rand, post, author, author_clerk_id, content) values (${id}, ${body.post}, ${body.user_id}, ${body.clerk_id}, ${body.content})`;
+  await sql`insert into comments (id_rand, post, author, author_clerk_id, content) values (${id}, ${body.post}, ${user.id}, ${body.clerk_id}, ${body.content})`;
 
   let comment = await sql`select * from comments where id_rand = ${id}`;
 
-  let users = await sql`select * from users where id = ${body.user_id}`;
-  let user = users[0];
+
 
   if (user.subrabbits_interacted_with.includes(body.subrabbit_name)) {
     let array = user.subrabbits_interacted_with;

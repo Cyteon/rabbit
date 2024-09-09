@@ -115,6 +115,8 @@
         await votePost(1);
     }
 
+    console.log(selfData)
+
     async function addComment() {
         let result = await fetch(`/api/r/${slug}/${data.post}`, {
             method: "POST",
