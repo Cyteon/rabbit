@@ -30,12 +30,14 @@ export async function POST({ url, request }) {
   var body = await request.json();
 
   var users = await sql`select * from users where id = ${body.user_id}`;
+  var user;
 
   if (users.length === 0) {
-    return Response.json({ message: "Unauthorized", status: 401 });
+    user = await sql`insert into users (id, votes) values (${body.user_id}, {}) returning *`;
+  } else {
+    user = users[0];
   }
 
-  let user = users[0];
 
   var posts =
     await sql`select * from posts where id = ${body.post} and subrabbit = ${body.subrabbit}`;
