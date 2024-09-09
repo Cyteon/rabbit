@@ -57,7 +57,7 @@ export async function POST({ url, request }) {
 
   let id = Math.random().toString(36).substring(4);
   
-  let users = await sql`select * from users where id = ${body.user_id}`;
+  let users = await sql`select * from users where clerk_id = ${body.clerk_id}`;
   let user;
 
   if (users.length === 0) {
