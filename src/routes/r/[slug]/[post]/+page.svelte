@@ -147,6 +147,7 @@
 </script>
 
 <head>
+    {#if post}
     <meta property="og:title" content={post.title} />
     <meta property="og:description" content={post.content} />
     <meta
@@ -154,6 +155,7 @@
         content={`https://rabbit.cyteon.tech/r/${slug}/${data.post}`}
     />
     <meta property="og:type" content="website" />
+    {/if}
 </head>
 
 <body class="bg-ctp-base h-[100vh]">
