@@ -58,7 +58,13 @@ export async function POST({ url, request }) {
   let id = Math.random().toString(36).substring(4);
   
   let users = await sql`select * from users where id = ${body.user_id}`;
-  let user = users[0];
+  let user;
+
+  if (users.length === 0) {
+    user = await sql`insert into users (id, subrabbits_interacted_with) values (${body.user_id}, ${[]}) returning *`;
+  } else {
+    user = users[0];
+  }
 
   await sql`insert into comments (id_rand, post, author, author_clerk_id, content) values (${id}, ${body.post}, ${user.id}, ${body.clerk_id}, ${body.content})`;
 

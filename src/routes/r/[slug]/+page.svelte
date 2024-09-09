@@ -114,7 +114,7 @@
 </script>
 
 <head>
-    <meta property="og:title" content={slug} />
+    <meta property="og:title" content={"r/" + slug + " on Rabbit"} />
 </head>
 
 <body class="bg-ctp-base h-[100vh]">
