@@ -1,2 +1,3 @@
 # Rabbit
-> Readme coming soon 
+
+A reddit clone built with SvelteKit, Clerk and PSQL.
