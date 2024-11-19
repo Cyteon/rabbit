@@ -33,6 +33,7 @@
     "@clerk/backend": "^1.4.1",
     "@preline/accordion": "^2.4.1",
     "clerk-sveltekit": "^0.4.2",
+    "dexie": "^4.0.10",
     "dompurify": "^3.1.6",
     "marked": "^14.1.0",
     "mongodb": "^6.8.0",

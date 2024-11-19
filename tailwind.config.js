@@ -1,4 +1,6 @@
 /** @type {import('tailwindcss').Config} */
+import catppuccin from "@catppuccin/tailwindcss";
+import typography from "@tailwindcss/typography";
 
 export default {
   content: ["./src/**/*.{html,js,svelte,ts}"],
@@ -31,13 +33,13 @@ export default {
     },
   },
   plugins: [
-    require("@catppuccin/tailwindcss")({
+    catppuccin({
       // prefix to use, e.g. `text-pink` becomes `text-ctp-pink`.
       // default is `false`, which means no prefix
       prefix: "ctp",
       // which flavour of colours to use by default, in the `:root`
       defaultFlavour: "macchiato",
     }),
-    require("@tailwindcss/typography"),
+    typography,
   ],
 };

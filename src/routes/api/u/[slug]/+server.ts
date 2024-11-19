@@ -11,6 +11,10 @@ export async function GET({ url, request, locals }) {
   let slug = url.pathname.split("/").pop();
 
   if (slug == "self") {
+    if (!locals.session) {
+      return Response.json({ message: "Unauthorized", status: 401 });
+    }
+
     let user = await clerkClient.users.getUser(locals.session.userId);
 
     let data = await sql`select * from users where clerk_id = ${user.id}`;

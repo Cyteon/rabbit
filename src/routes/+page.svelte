@@ -41,18 +41,22 @@
             }
 
             for (let index = 0; index < json.posts.length; index++) {
-                const post = json.posts[index];
-                let user = await fetch(`/api/u/id_${post.author_clerk_id}`);
-                let userData = await user.json();
+                try {
+                    const post = json.posts[index];
+                    let user = await fetch(`/api/u/id_${post.author_clerk_id}`);
+                    let userData = await user.json();
 
-                console.log(userData);
+                    console.log(userData);
 
-                json.posts[index].imageUrl = userData.imageUrl;
-                json.posts[index].username = userData.username;
+                    json.posts[index].imageUrl = userData.imageUrl;
+                    json.posts[index].username = userData.username;
 
-                json.posts[index].content = DOMPurify.sanitize(
-                    marked.parse(json.posts[index].content),
-                );
+                    json.posts[index].content = DOMPurify.sanitize(
+                        marked.parse(json.posts[index].content),
+                    );
+                } catch (error) {
+                    console.error("Error fetching data:", error);
+                }
             }
         } catch (error) {
             console.error("Error fetching data:", error);
