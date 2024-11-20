@@ -27,31 +27,60 @@ export async function GET({ url, request, locals }) {
         await sql`insert into users (clerk_id) values (${user.id}) returning *`;
     }
 
-    return Response.json({
-      session: locals.session,
-      user: user,
-      data: data[0],
-    });
+    return Response.json(
+      {
+        session: locals.session,
+        user: user,
+        data: data[0],
+      },
+      { status: 200 },
+    );
   }
 
   if (slug.startsWith("id_")) {
-    slug = slug.slice(3);
+    try {
+      slug = slug.slice(3);
 
-    let user = await clerkClient.users.getUser(slug);
+      let user = await clerkClient.users.getUser(slug);
 
-    if (user == null) {
-      return Response.json({ message: "User not found", status: 404 });
+      if (user == null) {
+        return Response.json({ message: "User not found" }, { status: 404 });
+      }
+
+      let result = await sql`select * from users where clerk_id = ${user.id}`;
+
+      if (result.length === 0) {
+        result =
+          await sql`insert into users (clerk_id) values (${user.id}) returning *`;
+      }
+
+      return Response.json(
+        {
+          id: user.id,
+          banned: user.banned,
+          imageUrl: user.imageUrl,
+          username: user.username,
+          publicMetadata: user.publicMetadata,
+          lastActiveAt: user.lastActiveAt,
+          createdAt: user.createdAt,
+        },
+        { status: 200 },
+      );
+    } catch (error) {
+      return new Response(null, { status: 404 });
     }
+  }
 
-    let result = await sql`select * from users where clerk_id = ${user.id}`;
+  let data = await sql`select * from users where id = ${parseInt(slug)}`;
 
-    if (result.length === 0) {
-      result =
-        await sql`insert into users (clerk_id) values (${user.id}) returning *`;
-    }
+  if (data.length === 0) {
+    return Response.json({ message: "User not found" }, { status: 404 });
+  }
 
-    let data = {
-      status: 200,
+  let user = await clerkClient.users.getUser(data[0].clerk_id);
+
+  return Response.json(
+    {
       id: user.id,
       banned: user.banned,
       imageUrl: user.imageUrl,
@@ -59,27 +88,7 @@ export async function GET({ url, request, locals }) {
       publicMetadata: user.publicMetadata,
       lastActiveAt: user.lastActiveAt,
       createdAt: user.createdAt,
-    };
-
-    return Response.json(data);
-  }
-
-  let data = await sql`select * from users where id = ${parseInt(slug)}`;
-
-  if (data.length === 0) {
-    return Response.json({ message: "User not found", status: 404 });
-  }
-
-  let user = await clerkClient.users.getUser(data[0].clerk_id);
-
-  return Response.json({
-    status: 200,
-    id: user.id,
-    banned: user.banned,
-    imageUrl: user.imageUrl,
-    username: user.username,
-    publicMetadata: user.publicMetadata,
-    lastActiveAt: user.lastActiveAt,
-    createdAt: user.createdAt,
-  });
+    },
+    { status: 200 },
+  );
 }

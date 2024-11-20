@@ -6,17 +6,19 @@ export async function GET({ url }) {
   var result = await sql`select * from subrabbits where name = ${slug}`;
 
   if (result.length === 0) {
-    return Response.json({ message: "404 Not Found", status: 404 });
+    return Response.json({ message: "404 Not Found" }, { status: 404 });
   }
 
   var posts =
     await sql`select * from posts where subrabbit = ${result[0].id} order by votes desc`;
 
-  return Response.json({
-    status: 200,
-    data: result[0],
-    posts: posts,
-  });
+  return Response.json(
+    {
+      data: result[0],
+      posts: posts,
+    },
+    { status: 200 },
+  );
 }
 
 export async function POST({ request }) {
@@ -26,7 +28,7 @@ export async function POST({ request }) {
     await sql`select * from subrabbits where name = ${body.subrabbit}`;
 
   if (result.length === 0) {
-    return Response.json({ message: "Subrabbit not found", status: 404 });
+    return Response.json({ message: "Subrabbit not found" }, { status: 404 });
   }
 
   let id = Math.random().toString(36).substring(4);
@@ -54,9 +56,11 @@ export async function POST({ request }) {
     await sql`update users set subrabbits_interacted_with = ${user[0].subrabbits_interacted_with} where id = ${user[0].id}`;
   }
 
-  return Response.json({
-    message: "Created",
-    status: 201,
-    url: `/r/${body.subrabbit}/${id}`,
-  });
+  return Response.json(
+    {
+      message: "Created",
+      url: `/r/${body.subrabbit}/${id}`,
+    },
+    { status: 201 },
+  );
 }

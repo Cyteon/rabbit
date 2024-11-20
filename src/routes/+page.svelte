@@ -9,6 +9,7 @@
     import DOMPurify from "dompurify";
 
     import { onMount } from "svelte";
+    import fetchUser from "$lib/fetchUser";
 
     let json = { posts: [] };
 
@@ -30,21 +31,18 @@
 
             if (response.status == 200) {
                 json = await response.json();
-
-                if (json.status == 200) {
-                    //console.log(json);
-                } else if (json.status == 404) {
-                    console.log("404");
-                }
             } else if (response.status == 404) {
-                console.log("404");
+                console.log("Couldnt find posts");
             }
 
             for (let index = 0; index < json.posts.length; index++) {
                 try {
                     const post = json.posts[index];
-                    let user = await fetch(`/api/u/id_${post.author_clerk_id}`);
-                    let userData = await user.json();
+                    let userData = await fetchUser(post.author_clerk_id);
+
+                    if (userData === null) {
+                        continue;
+                    }
 
                     console.log(userData);
 

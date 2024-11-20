@@ -15,25 +15,27 @@ export async function GET({ url, request }) {
   var subrabbit = await sql`select * from subrabbits where name = ${slug}`;
 
   if (subrabbit.length === 0) {
-    return Response.json({ message: "404 Not Found", status: 404 });
+    return Response.json({ message: "404 Not Found" }, { status: 404 });
   }
 
   var result =
     await sql`select * from posts where id_rand = ${post} and subrabbit = ${subrabbit[0].id}`;
 
   if (result.length === 0) {
-    return Response.json({ message: "404 Not Found", status: 404 });
+    return Response.json({ message: "404 Not Found" }, { status: 404 });
   }
 
   var comments =
     await sql`select * from comments where post = ${result[0].id} order by created_at desc`;
 
-  return Response.json({
-    status: 200,
-    data: result[0],
-    comments: comments,
-    subrabbit: subrabbit[0],
-  });
+  return Response.json(
+    {
+      data: result[0],
+      comments: comments,
+      subrabbit: subrabbit[0],
+    },
+    { status: 200 },
+  );
 }
 
 export async function POST({ url, request }) {
@@ -41,27 +43,30 @@ export async function POST({ url, request }) {
     var session = await clerkClient.authenticateRequest(request);
 
     if (!session.isSignedIn) {
-      return Response.json({ message: "Unauthorized", status: 401 });
+      return Response.json({ message: "Unauthorized" }, { status: 401 });
     }
   } catch (error) {
     console.log(error);
 
-    return Response.json({
-      message: "Internal Server Error",
-      error: error,
-      status: 500,
-    });
+    return Response.json(
+      {
+        message: "Internal Server Error",
+        error: error,
+      },
+      { status: 500 },
+    );
   }
 
   let body = await request.json();
 
   let id = Math.random().toString(36).substring(4);
-  
+
   let users = await sql`select * from users where clerk_id = ${body.clerk_id}`;
   let user;
 
   if (users.length === 0) {
-    user = await sql`insert into users (id, subrabbits_interacted_with) values (${body.user_id}, ${[]}) returning *`;
+    user =
+      await sql`insert into users (id, subrabbits_interacted_with) values (${body.user_id}, ${[]}) returning *`;
   } else {
     user = users[0];
   }
@@ -69,8 +74,6 @@ export async function POST({ url, request }) {
   await sql`insert into comments (id_rand, post, author, author_clerk_id, content) values (${id}, ${body.post}, ${user.id}, ${body.clerk_id}, ${body.content})`;
 
   let comment = await sql`select * from comments where id_rand = ${id}`;
-
-
 
   if (user.subrabbits_interacted_with.includes(body.subrabbit_name)) {
     let array = user.subrabbits_interacted_with;
@@ -87,9 +90,11 @@ export async function POST({ url, request }) {
     await sql`update users set subrabbits_interacted_with = ${user.subrabbits_interacted_with} where id = ${user.id}`;
   }
 
-  return Response.json({
-    message: "Created",
-    status: 201,
-    comment: comment[0],
-  });
+  return Response.json(
+    {
+      message: "Created",
+      comment: comment[0],
+    },
+    { status: 201 },
+  );
 }

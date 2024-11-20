@@ -19,8 +19,10 @@ export async function GET({ url }) {
       posts = await sql`select * from posts order by random()`;
   }
 
-  return Response.json({
-    status: 200,
-    posts: posts,
-  });
+  return Response.json(
+    {
+      posts: posts,
+    },
+    { status: 200 },
+  );
 }

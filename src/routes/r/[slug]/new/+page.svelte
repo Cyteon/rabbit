@@ -22,15 +22,9 @@
             if (response.status == 200) {
                 let json = await response.json();
 
-                if (json.status == 200) {
-                    console.log(json);
-                } else if (json.status == 404) {
-                    notFound = true;
-                    console.log("404");
-                }
-            } else if (response.status == 404) {
+                console.log(json);
+            } else {
                 notFound = true;
-                console.log("404");
             }
         } catch (error) {
             console.error("Error fetching data:", error);

@@ -6,10 +6,12 @@ export async function POST({ request }) {
   var result = await sql`select * from subrabbits where name = ${body.name}`;
   console.log(result);
   if (result.length > 0) {
-    return Response.json({
-      message: "Subrabbit already exists",
-      status: 409,
-    });
+    return Response.json(
+      {
+        message: "Subrabbit already exists",
+      },
+      { status: 409 },
+    );
   }
 
   var user = await sql`select * from users where clerk_id = ${body.owner}`;
@@ -27,9 +29,11 @@ export async function POST({ request }) {
     owner: body.owner,
   };
 
-  return Response.json({
-    message: "Created",
-    status: 201,
-    url: `/r/${body.name}`,
-  });
+  return Response.json(
+    {
+      message: "Created",
+      url: `/r/${body.name}`,
+    },
+    { status: 201 },
+  );
 }

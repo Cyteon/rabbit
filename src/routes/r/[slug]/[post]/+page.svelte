@@ -13,6 +13,7 @@
     import { marked } from "marked";
     import DOMPurify from "dompurify";
     import Sidebar from "$lib/components/sidebar.svelte";
+    import fetchUser from "$lib/fetchUser";
 
     let notFound = false;
     let json = { data: {}, post: {}, subrabbit: {}, comments: [] };
@@ -40,36 +41,24 @@
             if (response.status === 200) {
                 json = await response.json();
 
-                console.log(json);
+                post = json.data;
 
-                if (json.status === 200) {
-                    post = json.data;
-                    let user = await fetch(`/api/u/id_${post.author_clerk_id}`);
-                    let userData = await user.json();
+                let userData = await fetchUser(post.author_clerk_id);
 
-                    post.imageUrl = userData.imageUrl;
-                    post.username = userData.username;
+                post.imageUrl = userData?.imageUrl || "";
+                post.username = userData?.username || "[deleted user]";
 
-                    json.comments.forEach(async (post, index) => {
-                        let user = await fetch(
-                            `/api/u/id_${post.author_clerk_id}`,
-                        );
-                        let userData = await user.json();
+                json.comments.forEach(async (comment, index) => {
+                    let userData = await fetchUser(comment.author_clerk_id);
 
-                        json.comments[index].imageUrl = userData.imageUrl;
-                        json.comments[index].username = userData.username;
-                    });
+                    json.comments[index].imageUrl = userData.imageUrl || "";
+                    json.comments[index].username =
+                        userData.username || "[deleted user]";
+                });
 
-                    post.content = DOMPurify.sanitize(
-                        marked.parse(post.content),
-                    );
-                } else if (json.status === 404) {
-                    notFound = true;
-                    console.log("404");
-                }
+                post.content = DOMPurify.sanitize(marked.parse(post.content));
             } else if (response.status === 404) {
                 notFound = true;
-                console.log("404");
             }
         } catch (error) {
             console.error("Error fetching data:", error);
@@ -115,7 +104,7 @@
         await votePost(1);
     }
 
-    console.log(selfData)
+    console.log(selfData);
 
     async function addComment() {
         let result = await fetch(`/api/r/${slug}/${data.post}`, {
