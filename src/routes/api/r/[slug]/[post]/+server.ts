@@ -66,7 +66,7 @@ export async function POST({ url, request }) {
 
   if (users.length === 0) {
     user =
-      await sql`insert into users (id, subrabbits_interacted_with) values (${body.user_id}, ${[]}) returning *`;
+      await sql`insert into users (id) values (${body.user_id}) returning *`;
   } else {
     user = users[0];
   }
@@ -74,21 +74,6 @@ export async function POST({ url, request }) {
   await sql`insert into comments (id_rand, post, author, author_clerk_id, content) values (${id}, ${body.post}, ${user.id}, ${body.clerk_id}, ${body.content})`;
 
   let comment = await sql`select * from comments where id_rand = ${id}`;
-
-  if (user.subrabbits_interacted_with.includes(body.subrabbit_name)) {
-    let array = user.subrabbits_interacted_with;
-
-    array = array.filter((item) => item !== body.subrabbit_name);
-
-    user.subrabbits_interacted_with.push(body.subrabbit_name);
-
-    await sql`update users set subrabbits_interacted_with = ${user.subrabbits_interacted_with} where id = ${user.id}`;
-  } else {
-    console.log("huh");
-    user.subrabbits_interacted_with.push(body.subrabbit_name);
-
-    await sql`update users set subrabbits_interacted_with = ${user.subrabbits_interacted_with} where id = ${user.id}`;
-  }
 
   return Response.json(
     {

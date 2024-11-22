@@ -114,14 +114,6 @@
                         <div class="h-8"><MdAdd /></div>
                         <p class="text-base m-auto">Create a community</p>
                     </button>
-                    {#each json.data.subrabbits_interacted_with as subrabbit}
-                        <button
-                            class="flex flex-row w-full transition-all duration-300 hover:bg-black/15 p-1 rounded-lg"
-                            on:click={() => goto(`/r/${subrabbit}`)}
-                        >
-                            r/{subrabbit}
-                        </button>
-                    {/each}
                 </div>
             </div>
         </SignedIn>

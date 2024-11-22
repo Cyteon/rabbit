@@ -42,20 +42,6 @@ export async function POST({ request }) {
 
   await sql`insert into posts (id_rand, title, content, subrabbit, subrabbit_name, author, author_clerk_id) values (${id}, ${body.title}, ${body.content}, ${result[0].id}, ${body.subrabbit}, ${user[0].id}, ${body.author})`;
 
-  if (user[0].subrabbits_interacted_with.includes(body.subrabbit_name)) {
-    let array = user[0].subrabbits_interacted_with;
-
-    array = array.filter((item) => item !== body.subrabbit_name);
-
-    user[0].subrabbits_interacted_with.push(body.subrabbit_name);
-
-    await sql`update users set subrabbits_interacted_with = ${user[0].subrabbits_interacted_with} where id = ${user[0].id}`;
-  } else {
-    user[0].subrabbits_interacted_with.push(body.subrabbit);
-
-    await sql`update users set subrabbits_interacted_with = ${user[0].subrabbits_interacted_with} where id = ${user[0].id}`;
-  }
-
   return Response.json(
     {
       message: "Created",

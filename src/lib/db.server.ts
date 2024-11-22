@@ -3,13 +3,15 @@ import postgres from "postgres";
 
 const sql = postgres(DB_URL);
 
-async function createTables() {
+async function migrate() {
   await sql`CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     clerk_id TEXT UNIQUE NOT NULL,
     votes JSONB DEFAULT '{}',
     subrabbits_interacted_with TEXT[] DEFAULT '{}'
   );`;
+
+  //await sql`ALTER TABLE users DROP COLUMN subrabbits_interacted_with;`;
 
   await sql`CREATE TABLE IF NOT EXISTS sessions (
     id SERIAL PRIMARY KEY,
@@ -50,4 +52,4 @@ async function createTables() {
   );`;
 }
 
-export { sql, createTables };
+export { sql, migrate };
