@@ -122,7 +122,7 @@
             }),
         });
 
-        if (result.status === 200) {
+        if (result.status === 201) {
             let data = await result.json();
 
             data.comment.imageUrl = selfData.user.imageUrl;

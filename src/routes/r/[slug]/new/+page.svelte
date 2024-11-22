@@ -51,7 +51,7 @@
 
         let json = await response.json();
 
-        if (json.status == 201) {
+        if (response.status == 201) {
             goto(json.url);
         } else {
             console.log(json.message);
