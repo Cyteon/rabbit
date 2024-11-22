@@ -56,6 +56,21 @@
         console.log(communityName);
         console.log(communityDescription);
 
+        if (communityName == "") {
+            communityError = "Community name cannot be empty";
+            return;
+        }
+
+        if (communityName.includes("/")) {
+            communityError = "Community description cannot be empty";
+            return;
+        }
+
+        if (communityName.includes(" ")) {
+            communityError = "Community name cannot contain spaces";
+            return;
+        }
+
         let response = await fetch("/api/subrabbits/new", {
             method: "POST",
             headers: {
