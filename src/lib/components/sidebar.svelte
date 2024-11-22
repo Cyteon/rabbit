@@ -70,7 +70,7 @@
 
         let json = await response.json();
 
-        if (json.status == 201) {
+        if (response.status == 201) {
             goto(json.url);
         } else {
             communityError = json.message;

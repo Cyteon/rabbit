@@ -11,7 +11,7 @@ async function migrate() {
     subrabbits_interacted_with TEXT[] DEFAULT '{}'
   );`;
 
-  //await sql`ALTER TABLE users DROP COLUMN subrabbits_interacted_with;`;
+  await sql`ALTER TABLE users DROP COLUMN subrabbits_interacted_with;`; // deprecating cause wack
 
   await sql`CREATE TABLE IF NOT EXISTS sessions (
     id SERIAL PRIMARY KEY,
