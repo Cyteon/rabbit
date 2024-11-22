@@ -62,12 +62,7 @@
         }
 
         if (communityName.includes("/")) {
-            communityError = "Community description cannot be empty";
-            return;
-        }
-
-        if (communityName.includes(" ")) {
-            communityError = "Community name cannot contain spaces";
+            communityError = "Community name cannot contain '/'";
             return;
         }
 
